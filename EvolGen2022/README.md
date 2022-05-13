@@ -1,12 +1,14 @@
-# Analysis of Introgression with SNP Data
+# Evolutionary Genomics 2022 - Introgression and Species Tree Reconstruction
 
-A tutorial on the analysis of hybridization and introgression with SNP data by Milan Malinsky (millanek@gmail.com) and Michael Matschiner
+A tutorial on analyses of introgression and the effects of introgression on species tree reconstruction 
+
+Milan Malinsky (millanek@gmail.com) 
 
 ## Introduction
 
-Admixture between populations and hybridisation between species are common and a bifurcating tree is often insufficient to capture their evolutionary history ([example](https://www.sciencedirect.com/science/article/pii/S0959437X16302052)). Patterson’s D, also known as ABBA-BABA, and the related estimate of admixture fraction <i>f</i>, referred to as the f4-ratio are commonly used to assess evidence of gene flow between populations or closely related species in genomic datasets. They are based on examining patterns of allele sharing across populations or closely related species. Although they were developed in within a population genetic framework the methods can be successfully applied for learning about hybridisation and introgression within groups of closely related species, as long as common population genetic assumptions hold – namely that (a) the species share a substantial amount of genetic variation due to common ancestry and incomplete lineage sorting; (b) recurrent and back mutations at the same sites are negligible; and (c) substitution rates are uniform across species. 
+Admixture between populations and introgression between species are common. Therefore a bifurcating tree is often insufficient to capture the full evolutionary history ([example](https://www.sciencedirect.com/science/article/pii/S0959437X16302052)). 
 
-Patterson's D and related statistics have also been used to identify introgressed loci by sliding window scans along the genome, or by calculating these statistics for particular short genomic regions. Because the D statistic itself has large variance when applied to small genomic windows and because it is a poor estimator of the amount of introgression, additional statistics which are related to the f4-ratio have been designed specifically to investigate signatures of introgression in genomic windows along chromosomes. These statistics include <i>f</i><sub>d</sub> (Martin et al., 2015), its extension <i>f</i><sub>dM</sub> (Malinsky et al., 2015), and the distance fraction <i>d</i><sub>f</sub> (Pfeifer & Kapan, 2019).
+Patterson’s D, also known as ABBA-BABA, and the related estimate of admixture fraction <i>f</i>, referred to as the f4-ratio are commonly used to assess evidence of gene flow between populations or closely related species in genomic datasets. They are based on examining patterns of allele sharing across populations or closely related species. Although they were developed in within a population genetic framework the methods can be successfully applied for learning about hybridisation and introgression within groups of closely related species, as long as common population genetic assumptions hold – namely that (a) the species share a substantial amount of genetic variation due to common ancestry and incomplete lineage sorting; (b) recurrent and back mutations at the same sites are negligible; and (c) substitution rates are uniform across species. 
 
 ## Table of contents
 
@@ -27,54 +29,7 @@ Patterson's D and related statistics have also been used to identify introgresse
 <a name="outline"></a>
 ## Outline
 
-In this tutorial, we are first going to use simulated data to demonstrate that, under gene-flow, some inferred species relationships might not correspond to any real biologial relationships. Then we are going to use [Dsuite](https://doi.org/10.1111/1755-0998.13265), a software package that implements Patterson’s D and related statistics in a way that is straightforward to use and computationally efficient. This will allow us to identify admixed taxa. While exploring Dsuite, we are also going to learn or revise concepts related to application, calculation, and interpretation of the D and of related statistics. Next we apply sliding-window statistics to identify particular introgressed loci in a real dataset of Malawi cichlid fishes. Finally, we look at the same data that was used for species-tree inference with SVDQuartets in tutorial [Species-Tree Inference with SNP Data](../species_tree_inference_with_snp_data/README.md) to see if we can reach the same conclusions as a 2016 manuscript which used a more limited dataset with fewer species. 
-
-Students who are interested can also apply ancestry painting to investigate a putatitve case of hybrid species.  
-
-<!--- The original ABBA-BABA test has been extended in various ways, including the <i>D</i><sub>FOIL</sub>-statistic that allows inferring the direction of introgression from sets of five species ([Pease and Hahn 2015](https://academic.oup.com/sysbio/article/64/4/651/1650669)) and the <i>f</i><sub>D</sub>-statistic that is better suited for the identification of gene flow pertaining to certain regions of the genome ([Martin et al. 2014](https://academic.oup.com/mbe/article/32/1/244/2925550)). If a putative hybrid individual as well as the presumed parental species have already been identified, patterns of introgression can be investigated with ancestry painting, a method that focuses on sites that are fixed between the parental species and the alleles observed at these sites in the putative hybrid.) -->
-
-
-<!--- 
-<a name="dataset"></a>
-## Dataset
-
-The SNP data used in this tutorial is the unfiltered dataset used for species-tree inference with SVDQuartets in tutorial [Species-Tree Inference with SNP Data](../species_tree_inference_with_snp_data/README.md). More detailed information about the origin of this dataset is given in the Dataset section of this other tutorial. In brief, the dataset includes SNP data for the 28 samples of 14 cichlid species listed in the table below, and this data has already been filtered based on read quality and depth. Only SNPs mapping to chromosome 5 of the tilapia genome assembly ([Conte et al. 2017](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-017-3723-5)) are included in the dataset.
-
-<center>
-
-| Sample ID | Species ID | Species name                  | Tribe         |
-|-----------|------------|-------------------------------|---------------|
-| IZA1      | astbur     | *Astatotilapia burtoni*       | Haplochromini |
-| IZC5      | astbur     | *Astatotilapia burtoni*       | Haplochromini |
-| AUE7      | altfas     | *Altolamprologus fasciatus*   | Lamprologini  |
-| AXD5      | altfas     | *Altolamprologus fasciatus*   | Lamprologini  |
-| JBD5      | telvit     | *Telmatochromis vittatus*     | Lamprologini  |
-| JBD6      | telvit     | *Telmatochromis vittatus*     | Lamprologini  |
-| JUH9      | neobri     | *Neolamprologus brichardi*    | Lamprologini  |
-| JUI1      | neobri     | *Neolamprologus brichardi*    | Lamprologini  |
-| LJC9      | neocan     | *Neolamprologus cancellatus*  | Lamprologini  |
-| LJD1      | neocan     | *Neolamprologus cancellatus*  | Lamprologini  |
-| KHA7      | neochi     | *Neolamprologus chitamwebwai* | Lamprologini  |
-| KHA9      | neochi     | *Neolamprologus chitamwebwai* | Lamprologini  |
-| IVE8      | neocra     | *Neolamprologus crassus*      | Lamprologini  |
-| IVF1      | neocra     | *Neolamprologus crassus*      | Lamprologini  |
-| JWH1      | neogra     | *Neolamprologus gracilis*     | Lamprologini  |
-| JWH2      | neogra     | *Neolamprologus gracilis*     | Lamprologini  |
-| JWG8      | neohel     | *Neolamprologus helianthus*   | Lamprologini  |
-| JWG9      | neohel     | *Neolamprologus helianthus*   | Lamprologini  |
-| JWH3      | neomar     | *Neolamprologus marunguensis* | Lamprologini  |
-| JWH4      | neomar     | *Neolamprologus marunguensis* | Lamprologini  |
-| JWH5      | neooli     | *Neolamprologus olivaceous*   | Lamprologini  |
-| JWH6      | neooli     | *Neolamprologus olivaceous*   | Lamprologini  |
-| ISA6      | neopul     | *Neolamprologus pulcher*      | Lamprologini  |
-| ISB3      | neopul     | *Neolamprologus pulcher*      | Lamprologini  |
-| ISA8      | neosav     | *Neolamprologus savoryi*      | Lamprologini  |
-| IYA4      | neosav     | *Neolamprologus savoryi*      | Lamprologini  |
-| KFD2      | neowal     | *Neolamprologus walteri*      | Lamprologini  |
-| KFD4      | neowal     | *Neolamprologus walteri*      | Lamprologini  |
-
-</center>
--->
+In this tutorial, we are first going to use simulated data to demonstrate that, under gene-flow, some inferred species relationships might not correspond to any real biologial relationships. Then we are going to use [Dsuite](https://doi.org/10.1111/1755-0998.13265), a software package that implements Patterson’s D and related statistics in a way that is straightforward to use and computationally efficient. This will allow us to identify admixed taxa. While exploring Dsuite, we are also going to learn or revise concepts related to application, calculation, and interpretation of the D and of related statistics. Finally, we analyse a Lake Tanganyika cichlid dataset to see if we reach the same conclusions as a 2016 manuscript which used a more limited dataset with fewer species. 
 
 <a name="requirements"></a>
 ## Requirements
@@ -90,14 +45,16 @@ The SNP data used in this tutorial is the unfiltered dataset used for species-tr
 ## 1. Inferring the species-tree and gene-flow from a simulated dataset
 
 ### 1.1 Simulating phylogenomic data with msprime
-One difficulty with applying and comparing different methods in evolutionary genomics and phylogenomics is that we rarely know what the right answer is. If methods give us conflicting answers, or any answers, how do we know if we can trust them? One approach that is often helpful is the use of simulated data. Knowing the truth allows us to see if the methods we are using make sense. 
+One difficulty with applying and comparing different methods in evolutionary genomics and phylogenomics is that we rarely know what is the right answer. If methods give us conflicting answers, or any answers, how do we know if we can trust them? An approach that is often helpful is the use of simulated data. Knowing the truth allows us to see if the methods we are using make sense. One of fastest software packages around for simulating phylogenomic data is the coalescent-based [msprime](https://msprime.readthedocs.io/en/stable/) ([manuscript](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004842)). 
 
-One of fastest software packages around for simulating phylogenomic data is the coalescent-based [msprime](https://msprime.readthedocs.io/en/stable/) ([manuscript](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004842)). The msprime manuscript and the software itself are presented in population genetic framework. However, we can use it to produce phylogenomic data. This is because, from the point of view of looking purely at genetic data, there is no fundamental distinction between a set of allopatric populations of a single species and a set of different species. The genealogical processes that play out across different population are indeed the same as the processes that determine the genetic relationships along-the-genome of any species that may arise. We will return to this theme of a continuum between population genetics and phylogenomics later.
+The msprime manuscript and the software itself are presented in population genetic framework. However, we can use also use msprime to produce phylogenomic data. This is because, from the point of view of looking purely at genetic data, there is no fundamental distinction between a set of allopatric populations of a single species and a set of different species. The genealogical processes that play out across different population are indeed the same as the processes that determine the genetic relationships along-the-genome of any species that may arise. We will return to this theme of a continuum between population genetics and phylogenomics later.
 
-We have simulated SNP data for 20 species in the VCF format, two individuals from each species. The species started diverging 1 million years ago, with effective population sizes on each branch set to 50,000. Both the recombination and mutation rates were set to 1e-8 and 20Mb of data were simulated. Because these simulations take some time to run, we have the ready simulated data available for you. First a simulation without gene-flow ([VCF](data/chr1_no_geneflow.vcf.gz), true tree: [image](img/simulated_tree_no_geneflow.pdf), [newick](data/simulated_tree_no_geneflow.nwk), [json](data/simulated_tree_no_geneflow.nwk.mass_migrations.json)), and second, a simulation where five gene-flow events have been added to a tree ([VCF](data/with_geneflow.vcf.gz), true tree with gene-flow: [image](img/simulated_tree_with_geneflow.pdf), [newick](data/simulated_tree_with_geneflow.nwk), [json](data/simulated_tree_with_geneflow.nwk.mass_migrations.json)). Details for how to generate such simulated datasets are provided below.      
+For this exercise, we have simulated SNP data for 20 species in the VCF format, two individuals from each species. The species started diverging 1 million years ago, with effective population sizes on each branch set to 50,000. Both the recombination and mutation rates were set to 1e-8 and 20Mb of data were simulated. 
+
+There are two datasets. First a simulation without gene-flow ([VCF](data/chr1_no_geneflow.vcf.gz), true tree: [image](img/simulated_tree_no_geneflow.pdf), [newick](data/simulated_tree_no_geneflow.nwk), [json](data/simulated_tree_no_geneflow.nwk.mass_migrations.json)), and second, a simulation where five gene-flow events have been added to a tree ([VCF](data/with_geneflow.vcf.gz), true tree with gene-flow: [image](img/simulated_tree_with_geneflow.pdf), [newick](data/simulated_tree_with_geneflow.nwk), [json](data/simulated_tree_with_geneflow.nwk.mass_migrations.json)).      
 
 <details>
-  <summary>Generating simulated phylogenomic data with msprime</summary>
+  <summary>If you are interested in detail about how to simulate phylogenomic data with msprime, click here</summary>
   
   It is in principle possible to simulate data from an arbitrary phylogeny with msprime, but specifying the phylogenetic tree directly in the program is complicated. Therefore, a number of 'helper' wrapper programs have been developed that can make this task much easier for us. For this exercise, we use Hannes Svardal's [pypopgen3](https://github.com/feilchenfeldt/pypopgen3). After installing pypogen3 and its dependencies, using the instructions on the webpage, we simulated the data using the following code:
   
@@ -140,7 +97,7 @@ We have simulated SNP data for 20 species in the VCF format, two individuals fro
 <a name="ReconstructingFromSimulation"></a>
 ### 1.2 Reconstructing phylogenies from simulated data
 
-Now we apply the phylogentic (or phylogenomic) approaches that we have learned to the simulated SNP data to see if we can recover the phylogentic trees that were used as input to the simulations. As in the tutorial on [Species-Tree Inference with SNP Data](../species_tree_inference_with_snp_data/README.md), we are going to use algorithms implemented in [PAUP\*](http://phylosolutions.com/paup-test/). 
+Now we apply the phylogentic (or phylogenomic) approaches that we have learned to the simulated SNP data to see if we can recover the phylogentic trees that were used as input to the simulations. We are going to use algorithms implemented in [PAUP\*](http://phylosolutions.com/paup-test/). 
 
 Our msprime simulation did not use any specific [substitution model](https://en.wikipedia.org/wiki/Models_of_DNA_evolution) for mutations, but simply designated alleles as `0` for ancestral and `1` for derived. The alleles are indicated in the fourth (REF) and fifth (ALT) column of the VCF as per the [VCF file format](https://samtools.github.io/hts-specs/VCFv4.2.pdf). To use PAUP\* we first need to convert the the VCF into the Nexus format, and this needs the  `0` and `1` alleles to be replaced by actual DNA bases. We can use the [vcf2phylip.py](src/vcf2phylip.py) python script and achieve these steps as follows, first for the dataset simulated without gene-flow:
 
@@ -150,11 +107,25 @@ gunzip -c chr1_no_geneflow.vcf.gz | awk 'BEGIN{OFS=FS="\t"}{ if(NR > 6) { $4="A"
 # convert the VCF to the Nexus format:
 python2 vcf2phylip.py -i chr1_no_geneflow_nt.vcf.gz -p --nexus
 ```
-* Next, open the Nexus file `chr1_no_geneflow_nt.min4.nexus` in PAUP\*, again making sure that the option "Execute" is set in the opening dialog, as shown in the screenshot.<p align="center"><img src="img/PAUP_open.png" alt="PAUP\*" width="600"></p>
+* Next, we start the command line version of PAUP\* to construct a Neighbour-Joining tree. To start PAUP\*, simply type `paup` on the command line. The follow the commands below.
+  
+```bash
+# Load the data file in the nexus format:
+execute chr1_no_geneflow_nt.min4.nexus
+# See the "Taxon-status summary":
+tstatus
+# Assign the correct outgroup:
+Outgroup outgroup.0
+# Reconstruct the Neighbour-Joining tree:
+set criterion = distance;
+nj brlens = yes treefile=njtree_noGeneFlow.tre;
+```
 
-* Then designate the outgroup (Data->Define_outgroup) as you learned in the tutorial on [Species-Tree Inference with SNP Data](../species_tree_inference_with_snp_data/README.md).
+The resulting tree is saved to `~/data/njtree_noGeneFlow.tre` on the virtual machine. To copy the file to your computer in order to open it in FigTree, you can use scp as follows:
 
-* Then use the Neighbor Joining algorithm (Analysis->Neighbor-Joining/UPGMA) with default parameters to build a quick phylogeny. 
+```bash
+scp -i ~/EvolGenKey.pem ubuntu@YOUR-IP-HERE.us-east-2.compute.amazonaws.com:~/data/njtree_noGeneFlow.tre . 
+```
 
 As you can see by comparison of the tree you just reconstructed (also below) against [the input tree](img/simulated_tree_no_geneflow.pdf), a simple Neigbor Joining algorithm easily reconstructs the tree topology perfectly, and even the branch lengths are almost perfect. 
 
