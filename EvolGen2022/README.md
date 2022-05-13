@@ -14,15 +14,12 @@ Patterson’s D, also known as ABBA-BABA, and the related estimate of admixture 
 
 * [Outline](#outline)
 * [Requirements](#requirements)
-* [1. Inferring the species-tree and gene-flow from a simulated dataset](#simulation)
-* [1.1 Simulating phylogenomic data with msprime](#simulation)
-* [1.2 Reconstructing phylogenies from simulated data](#ReconstructingFromSimulation)
-* [1.3 Testing for gene-flow in simulated data ](#TestingInSimulations)
-* [1.3.2 Do we find geneflow in data simulated without geneflow?](#TestingWithoutGeneflow)
-* [1.3.2 Do we find geneflow in data simulated with geneflow?](#TestingWithGeneflow)
-* [2. Finding specific introgressed loci - adaptive introgression in Malawi cichlids](#SpecificLoci)
+* [Prelim: Simulating phylogenomic data with msprime](#simulation)
+* [1. Reconstructing phylogenies from simulated data](#ReconstructingFromSimulation)
+* [2. Testing for gene-flow in simulated data ](#TestingInSimulations)
+* [2.1 Do we find geneflow in data simulated without geneflow?](#TestingWithoutGeneflow)
+* [2.2 Do we find geneflow in data simulated with geneflow?](#TestingWithGeneflow)
 * [3. Finding geneflow in a real dataset - Tanganyikan cichlids](#Tanganyika)
-* [4. Ancestry painting](#painting)
 
 <!--- * [Dataset](#dataset)-->
 
@@ -42,9 +39,8 @@ In this tutorial, we are first going to use simulated data to demonstrate that, 
 
 
 <a name="simulation"></a>
-## 1. Inferring the species-tree and gene-flow from a simulated dataset
 
-### 1.1 Simulating phylogenomic data with msprime
+## Prequel: Simulating phylogenomic data with msprime
 One difficulty with applying and comparing different methods in evolutionary genomics and phylogenomics is that we rarely know what is the right answer. If methods give us conflicting answers, or any answers, how do we know if we can trust them? An approach that is often helpful is the use of simulated data. Knowing the truth allows us to see if the methods we are using make sense. One of fastest software packages around for simulating phylogenomic data is the coalescent-based [msprime](https://msprime.readthedocs.io/en/stable/) ([manuscript](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004842)). 
 
 The msprime manuscript and the software itself are presented in population genetic framework. However, we can use also use msprime to produce phylogenomic data. This is because, from the point of view of looking purely at genetic data, there is no fundamental distinction between a set of allopatric populations of a single species and a set of different species. The genealogical processes that play out across different population are indeed the same as the processes that determine the genetic relationships along-the-genome of any species that may arise. We will return to this theme of a continuum between population genetics and phylogenomics later.
@@ -95,7 +91,7 @@ There are two datasets. First a simulation without gene-flow ([VCF](data/chr1_no
 </details>
 
 <a name="ReconstructingFromSimulation"></a>
-### 1.2 Reconstructing phylogenies from simulated data
+## 1. Reconstructing phylogenies from simulated data
 
 Now we apply the phylogentic (or phylogenomic) approaches that we have learned to the simulated SNP data to see if we can recover the phylogentic trees that were used as input to the simulations. We are going to use algorithms implemented in [PAUP\*](http://phylosolutions.com/paup-test/). 
 
@@ -161,7 +157,7 @@ As you can see, the topology is in fact different from the Neighbor Joining, but
 </details>
 
 <a name="TestingInSimulations"></a>
-### 1.3 Testing for gene-flow in simulated data 
+## 2. Testing for gene-flow in simulated data 
 
 Under incomplete lineage sorting alone, two sister species are expected to share about the same proportion of derived alleles with a third closely related species. Thus, if species "P1" and "P2" are sisters and "P3" is a closely related species, then the number of derived alleles shared by P1 and P3 but not P2 and the number of derived alleles that is shared by P2 and P3 but not P1 should be approximately similar. In contrast, if hybridization leads to introgression between species P3 and one out the two species P1 and P2, then P3 should share more derived alleles with that species than it does with the other one, leading to asymmetry in the sharing of derived alleles. These expectations are the basis for the so-called "ABBA-BABA test" (first described in the Supporting Material of [Green et al. 2010](http://science.sciencemag.org/content/328/5979/710.full)) that quantifies support for introgression by the *D*-statistic. Below is an illustration of the basic principle. 
 
@@ -184,7 +180,7 @@ Something similar to the above can be useful in many cases, depending on how the
 * To learn more about the command, type `Dsuite Dtrios` and hit enter. The help text should then inform you about how to run this command. There are numerous options, but the defaults are approprite for a vast majority of use-cases.  All we are going to do is to provide a run name using the `-n` option, the correct tree using the `-t` option, and use the `-c` option to indicate that this is the entire dataset and, therefore, we don't need intermediate files for "DtriosCombine". 
 
 <a name="TestingWithoutGeneflow"></a>
-#### 1.3.1 Do we find geneflow in data simulated without geneflow?
+### 2.1 Do we find geneflow in data simulated without geneflow?
 
 We run Dsuite for the dataset without gene-flow as follows:
 
@@ -317,7 +313,7 @@ ruby plot_f4ratio.rb species_sets_no_geneflow_BBAA.txt plot_order.txt 0.2 specie
 
 
 <a name="TestingWithGeneflow"></a>
-#### 1.3.2 Do we find geneflow in data simulated with geneflow?
+#### 2.2 Do we find geneflow in data simulated with geneflow?
 
 How do the results for the simulation with geneflow differ from the above? Here we are going to run a similar set of analyses and make comparisons. We run Dsuite for the dataset with gene-flow as follows:
 
@@ -409,91 +405,6 @@ The second command creates a file called `fbranch.png`, which is shown below.
 **Question 6:** What happens when you re-run Dsuite with the inferred (wrong) tree from PAUP\*?
 
 
-<a name="SpecificLoci"></a>
-## 2. Finding specific introgressed loci - adaptive introgression in Malawi cichlids
-
-This exercise is based on analysis from the [Malinsky et al. (2018)](https://doi.org/10.1038/s41559-018-0717-x) manuscript published in Nature Ecol. Evo.. The paper shows that two deep water adapted lineages of cichlids share signatures of selection and very similar haplotypes in two green-sensitive opsin genes (RH2Aβ and RH2B). The genes are located next to each other on scaffold_18. To find out whether these shared signatures are the result of convergent evolution or of adaptive introgression, we used the f_dM statistic. The f_dM is related to Patterson’s D and to the f4-ratio, but is better suited to analyses of sliding genomic windows. The calculation of this statistic is implemented in the program `Dsuite Dinvestigate`.
-
-The data for this exercise are in the [data](data/) folder. It includes the VCF file with variants mapping to the scaffold_18 of the Malawi cichlid reference genome we used at the time - [`scaffold_18.vcf.gz`](data/scaffold_18.vcf.gz). There are also two other files required to run Dinvestigate: the “SETS” file and the “test_trios” file. In this case they are called: [`MalawiSetsFile.txt`](data/MalawiSetsFile.txt) and [`MalawiTestTriosForInvestigate.txt`](data/MalawiTestTriosForInvestigate.txt). The “TestTrios” file specifies that we want to investigate the admixture signal between the Diplotaxodon genus and the deep benthic group, compared with the mbuna group. The “SETS” file specifies which individuals belong to these groups. Finally, the command to execute the analysis is:
-
-```bash
-Dsuite Dinvestigate -w 50,25 scaffold_18.vcf.gz MalawiSetsFile.txt MalawiTestTriosForInvestigate.txt
-```
-
-The `-w 50,25` option specifies that the statistics should be averaged over windows of 50 informative SNPs, moving forward by 25 SNPs at each step. The run should take a little under 10 minutes. We suggest you have a tea/coffee break while you wait for the results ;).
-
-**Question 7:**  What are the overall D and f_dM values over the entire scaffold_18? What does this suggest?
-
-The results are output by Dsuite into the file `mbuna_deep_Diplotaxodon_localFstats__50_25.txt`. A little R plotting function [`plotInvestigateResults.R`](src/plotInvestigateResults.R) is prepared for you. Use the script to load in the file you just produced (line 3) and plot the D statistic (line 6).  Also execute line 8 of the script to plot the f_dM values. Do you see any signal near the opsin coordinates? We also plot the f_d statistic. As you can see, the top end of the plot is the same as for the f_dM, but the f_d is asymmetrical, extending far further into negative values. 
-
-**Question 8:** Do you see any interesting signal in the D, f_dM, and f_d statistics? The opsin genes are located between 4.3Mb and 4.4Mb. Do you see anything interesting there?
-
-<details>
-<summary>Click here to see the resulting R plots</summary>
-
-<p align="center"><img src="data/Dinvestigate_bigWindow.png" alt="\*" width="600"></p>
-
-You could also plot the new d_f statistic? Doe that look any better?
-
-</details>
-
-Finally, we zoom in at the region of the opsin genes (line 12). As you can see, the results look like a single “mountain” extending over 100kb.
-
-<details>
-<summary>Click here to see the zoom in with `-w 50,25`</summary>
-
-<p align="center"><img src="data/Dinvestigate_zoom.png" alt="\*" width="600"></p>
-
-</details>
-
-
-But there is more structure than that in the region. Perhaps we need to reduce the window or step size to see a greater level of detai.
-
-To save time, we prepared result files for runs with varying window and step sizes: [`mbuna_deep_Diplotaxodon_localFstats__50_5.txt`](data/mbuna_deep_Diplotaxodon_localFstats__50_5.txt),  [`mbuna_deep_Diplotaxodon_localFstats__50_1.txt`](data/mbuna_deep_Diplotaxodon_localFstats__50_1.txt),  [`mbuna_deep_Diplotaxodon_localFstats__10_1.txt`](data/mbuna_deep_Diplotaxodon_localFstats__10_1.txt), and  [`mbuna_deep_Diplotaxodon_localFstats__2_1.txt`](data/mbuna_deep_Diplotaxodon_localFstats__2_1.txt).
-
- They can be plotted with the same R script. Have a look at the results.
- 
- <details>
- <summary>Click here to see the zoom in with `-w 50,5`</summary>
-
- <p align="center"><img src="data/Dinvestigate_zoom50_5.png" alt="\*" width="600"></p>
-
- </details>
- 
- <details>
- <summary>Click here to see the zoom in with `-w 50,1`</summary>
-
- <p align="center"><img src="data/Dinvestigate_zoom50_1.png" alt="\*" width="600"></p>
-
- </details>
- 
-  <details>
- <summary>Click here to see the zoom in with `-w 10,1`</summary>
-
- <p align="center"><img src="data/Dinvestigate_zoom10_1.png" alt="\*" width="600"></p>
-
- </details>
- 
- <details>
-
- <summary>Click here to see the zoom in with `-w 2,1`</summary>
-
- <p align="center"><img src="data/Dinvestigate_zoom2_1.png" alt="\*" width="600"></p>
-
- </details>
-
-**Question 9:** What combination of window size/step seems to have the best resolution? Why is the smallest window so noisy?
-
-**Question 10:** What happens if you plot individual data points, instead of a continuous line? Are the results clearer?
-
- <details>
-<summary>Click here to see the zoom in with `-w 10,1` and individual data points</summary>
-
-<p align="center"><img src="data/Dinvestigate_zoom10_1_points.png" alt="\*" width="600"></p>
-
-</details>
-
-
 <a name="Tanganyika"></a>
 ## 3. Finding geneflow in a real dataset - Tanganyikan cichlids
 
@@ -503,7 +414,7 @@ In this execise, we are going to see if we can reproduce the findings reported b
 
 A dataset containing these species, but also six additional Neolamprologus species (for a total of 11) was used in the tutorials on [Species-Tree Inference with SNP Data](../species_tree_inference_with_snp_data/README.md) and [Divergence-Time Estimation with SNP Data](../divergence_time_estimation_with_snp_data/README.md).
 
-**Question 11:** Are the trees you reconstructed in these exercises consistent with the relationships reported by Gante et al.?
+**Question 7:** Are the trees you reconstructed in these exercises consistent with the relationships reported by Gante et al.?
 
 Here we use data with 10 Neolamprologus species (the clearly hybrid Neolamprologus cancellatus removed), to reassess the evidence for geneflow within this genus with the f4-ratio and f-branch statistics. The genetic data are in [`NC_031969.vcf.gz`](data/TanganyikaCichlids/NC_031969.vcf.gz), the file specifying sample->species relationships is [`NC_031969_sets.txt`](data/TanganyikaCichlids/NC_031969_sets.txt) and the tree topology hypothesis is in [`SNAPP_tree.txt`](data/TanganyikaCichlids/SNAPP_tree.txt). We run the analysis for all possible trios as follows:
 
@@ -520,9 +431,9 @@ python3 dtools.py Tanganyika_Fbranch.txt SNAPP_tree.txt
 
 <p align="center"><img src="data/TanganyikaCichlids/fbranch.png"></p>
 
-**Question 12:** Are the geneflow signals seen here consistent with the Gante et al. figure?
+**Question 8:** Are the geneflow signals seen here consistent with the Gante et al. figure?
 
-**Question 13:** What happens when we focus only on the five species from Gante et al. and exclude all others?
+**Question 9:** What happens when we focus only on the five species from Gante et al. and exclude all others?
 
 <details>
 <summary>Click here for an answer</summary>
@@ -539,60 +450,4 @@ Notice the `-n` option to `dtools.py`, to specify the output file name, making s
 <p align="center"><img src="data/TanganyikaCichlids/reduced.png"></p>
 
 </details>
-
-<a name="painting"></a>
-## 4. Ancestry painting
-
-A very simple alternative way of investigating patterns of ancestry in potentially introgressed or hybrid species is to "paint" their chromosomes according to the genotypes carried at sites that are fixed between the presumed parental species. This type of plot, termed "ancestry painting" was used for example by [Fu et al. (2015; Fig. 2)](https://www.nature.com/articles/nature14558) to find blocks of Neanderthal ancestry in an ancient human genome, by [Der Sarkassian et al. (2015; Fig. 4)](https://www.cell.com/current-biology/abstract/S0960-9822(15)01003-9) to investigate the ancestry of Przewalski's horses, by [Runemark et al. (2018; Suppl. Fig. 4)](https://www.nature.com/articles/s41559-017-0437-7) to assess hybridization in sparrows, and by [Barth et al. (2019; Fig. 2)](https://www.biorxiv.org/content/10.1101/635631v1) to identify hybrids in tropical eels.
-
-* If you haven't seen any of the above-named studies, you might want to have a look at the ancestry-painting plots in some of them. You may note that the ancestry painting in [Fu et al. (2015; Fig. 2)](https://www.nature.com/articles/nature14558) is slightly different from the other two studies because no discrimination is made between heterozygous and homozygous Neanderthal alleles. Each sample in Fig. 2 of [Fu et al. (2015)](https://www.nature.com/articles/nature14558) is represented by a single row of cells that are white or colored depending on whether or not the Neanderthal allele is present at a site. In contrast, each sample in the ancestry paintings of [Der Sarkassian et al. (2015; Fig. 4)](https://www.cell.com/current-biology/abstract/S0960-9822(15)01003-9), [Runemark et al. (2018; Suppl. Fig. 4)](https://www.nature.com/articles/s41559-017-0437-7), and [Barth et al. (2019; Fig. 2)](https://www.biorxiv.org/content/10.1101/635631v1) is drawn with two rows of cells. However, as the analyses in both studies were done with unphased data, these two rows do not represent the two haplotypes per sample. Instead, the two cells per site were simply both colored in the same way for homozygous sites or differently for heterozygous sites without regard to haplotype structure.
-
-	Here, we are going to use ancestry painting to investigate ancestry in *Neolamprologus cancellatus* ("neocan"), assuming that it is a hybrid between the parental species *Altolamprologus fasciatus* ("altfas") and *Telmatochromis vittatus* ("telvit"). As in [Der Sarkassian et al. (2015; Fig. 4)](https://www.cell.com/current-biology/abstract/S0960-9822(15)01003-9), [Runemark et al. (2018; Suppl. Fig. 4)](https://www.nature.com/articles/s41559-017-0437-7), and [Barth et al. (2019; Fig. 2)](https://www.biorxiv.org/content/10.1101/635631v1), we are going to draw two rows per sample to indicate whether genotypes are homozygous or heterozygous.
-
-* To generate an ancestry painting, we will need the data file [`NC_031969.f5.sub1.vcf.gz`](../analysis_of_introgression_with_chromosome_length_alignments/data/NC_031969.f5.sub1.vcf.gz) and will  run two Ruby scripts. The first of these, [`get_fixed_site_gts.rb`](src/get_fixed_site_gts.rb) determines the alleles of the putative hybrid species at sites that are fixed differently in the two putative parental species. The second script, [`plot_fixed_site_gts.rb`](src/plot_fixed_site_gts.rb) then uses the output of the first script to draw an ancestry painting. As the first script requires an uncompressed VCF file as input, first uncompress the VCF file for the SNP dataset with the following command:
-
-		gunzip -c NC_031969.f5.sub1.vcf.gz > NC_031969.f5.sub1.vcf
-
-* Then, run the Ruby script [`get_fixed_site_gts.rb`](src/get_fixed_site_gts.rb) to determine the alleles at sites that are fixed differently in the two parents. This script expects six arguments; these are
-	* the name of the uncompressed VCF input file, [`NC_031969.f5.sub1.vcf`,
-	* the name of an output file, which will be a tab-delimited table,
-	* a string of comma-separated IDs of samples for the first putative parent species,
-	* a string of comma-separated IDs of samples for the putative hybrid species,
-	* another string of comma-separated IDs of samples for the second putative parent species,
-	* a threshold value for the required completeness of parental genotype information so that sites with too much missing data are discarded.
-
-	We'll use `NC_031969.f5.sub1.vcf` as the input and name the output file `pops1.fixed.txt`. Assuming that the parental species are *Altolamprologus fasciatus* ("altfas") and *Telmatochromis vittatus* ("telvit") and the hybrid species is *Neolamprologus cancellatus* ("neocan"), we'll specify the sample IDs for these species with the strings "AUE7,AXD5", "JBD5,JBD6", and "LJC9,LJD1". Finally, we'll filter for sites without missing data by specifying "1.0" as the sixth argument. Thus, run the script [`get_fixed_site_gts.rb`](src/get_fixed_site_gts.rb) with the following command:
-
-		ruby get_fixed_site_gts.rb NC_031969.f5.sub1.vcf pops1.fixed.txt AUE7,AXD5 LJC9,LJD1 JBD5,JBD6 1.0
-
-* The second script, [`plot_fixed_site_gts.rb`](src/plot_fixed_site_gts.rb), expects four arguments, which are
-	* the name of the file written by script [`get_fixed_site_gts.rb`](src/get_fixed_site_gts.rb),
-	* the name of an output file which will be a plot in SVG format,
-	* a threshold value for the required completeness, which now applies not only to the parental species but also to the putative hybrid species,
-	* the minimum chromosomal distance in bp between SNPs included in the plot. This last argument aims to avoid that the ancestry painting is overly dominated by high-divergence regions.
-
-	We'll use the file [`pops1.fixed.txt`](res/pops1.fixed.txt) as input, name the output file `pops1.fixed.svg`, require again that no missing data remains in the output, and we'll thin the remaining distances so that those plotted have a minimum distance of 1,000 bp to each other. Thus, use the following command to draw the ancestry painting:
-
-		ruby plot_fixed_site_gts.rb pops1.fixed.txt pops1.fixed.svg 1.0 1000
-		
-	The screen output of this script will include some warnings about unexpected genotypes, these can be safely ignored as the script automatically excludes those sites. At the very end, the output should indicate that 6,069 sites with the required completeness were found, these are the sites included in the ancestry painting. Th output also reports, for all analyzed specimens, the heterozygosity at those 6,069 sites. For first-generation hybrids, this heterozygosity is expected to be close to 1.
-
-* Open the file [`pops1.fixed.svg`](res/pops1.fixed.svg) with a program capable of reading files in SVG format, for example with a browser such as Firefox or with Adobe Illustrator. You should see a plot like the one shown below. <p align="center"><img src="img/pops1.fixed.png" alt="Ancestry Painting" width="600"></p>
-
-	In this ancestry painting, the two samples of the two parental species are each drawn in solid colors because all included sites were required to be completely fixed and completely without missing data. The samples of *Neolamprologus cancellatus*, "LJC9" and "LJD1" are drawn in between, with two rows per sample that are colored according to genotypes observed at the 6,069 sites. Keep in mind that even though the pattern may appear to show phased haplotypes, this is not the case; instead the bottom row for a sample is arbitrarily colored in red and the top row is colored in blue when the genotype is heterozygous.
-	
-	**Question 14:** Do you notice any surprising difference to the ancestry plots of [Der Sarkassian et al. (2015; Fig. 4)](https://www.cell.com/current-biology/abstract/S0960-9822(15)01003-9) and [Runemark et al. (2018; Suppl. Fig. 4)](https://www.nature.com/articles/s41559-017-0437-7)? 
-    <details>
-    <summary>Click here to see the answer</summary>
-    
-    One remarkable difference compared to the ancestry painting of [Der Sarkassian et al. (2015; Fig. 4)](https://www.cell.com/current-biology/abstract/S0960-9822(15)01003-9) and [Runemark et al. (2018; Suppl. Fig. 4)](https://www.nature.com/articles/s41559-017-0437-7) is that almost no homozygous genotypes are observed in the two samples of *Neolamprologus cancellatus*: the bottom rows are drawn almost entirely in red for the two putative hybrid individuals and the top rows are almost entirely in blue. The same pattern, however, can be found in [Barth et al. (2019; Fig. 2)](https://www.biorxiv.org/content/10.1101/635631v1).
-        </details>
-
-	**Question 15:** How can this difference be explained? 
-    <details>
-    <summary>Click here to see the answer</summary>
-    
- The fact that both *Neolamprologus cancellatus* samples are heterozygous for basically all sites that are differentially fixed in the two parental species can only be explained if both of these samples are in fact first-generation hybrids. If introgression would instead be more ancient and backcrossing (or recombination within the hybrid population) had occurred, we would expect that only certain regions of the chromosome are heterozygous while others should be homozygous for the alleles of one or the other of the two parental species. However, unlike in cases where the genomes have been sequenced of parent-offspring trios, we do not know who the actual parent individuals were. We can guess that the parent individuals were members of the species *Altolamprologus fasciatus* and *Telmatochromis vittatus*, but whether the parental individuals were part of the same population as the sampled individuals or a more distantly related population within these species remains uncertain. 
-         </details>
- 
 
