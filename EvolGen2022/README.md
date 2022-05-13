@@ -101,7 +101,7 @@ Our msprime simulation did not use any specific [substitution model](https://en.
 # unzip the VCF and process it with AWK to replace each ancestral allele (fourth column) with an A and each derived allele (fifth column) with a T
 gunzip -c chr1_no_geneflow.vcf.gz | awk 'BEGIN{OFS=FS="\t"}{ if(NR > 6) { $4="A"; $5="T"; print $0} else {print}};' | gzip -c > chr1_no_geneflow_nt.vcf.gz
 # convert the VCF to the Nexus format:
-python2 vcf2phylip.py -i chr1_no_geneflow_nt.vcf.gz -p --nexus
+vcf2phylip.py -i chr1_no_geneflow_nt.vcf.gz -p --nexus
 ```
 * Next, we start the command line version of PAUP\* to construct a Neighbour-Joining tree. To start PAUP\*, simply type `paup` on the command line. The follow the commands below.
   
@@ -117,7 +117,7 @@ set criterion = distance;
 nj brlens = yes treefile=njtree_noGeneFlow.tre;
 ```
 
-The resulting tree is saved to `~/data/njtree_noGeneFlow.tre` on the virtual machine. To copy the file to your computer in order to open it in FigTree, you can use scp as follows:
+The resulting tree is saved to `~/data/njtree_noGeneFlow.tre` on the virtual machine. Press `q` folowed by the `Enter/return` key to quit PAUP\*. Then, to copy the tree file to your computer (where you can view it in FigTree), you can use scp as follows:
 
 ```bash
 scp -i ~/EvolGenKey.pem ubuntu@YOUR-IP-HERE.us-east-2.compute.amazonaws.com:~/data/njtree_noGeneFlow.tre . 
@@ -138,10 +138,24 @@ Now we repeat the same tree-reconstruction procedure for the simulation with gen
 # unzip the VCF and process it with AWK to replace each ancestral allele (fourth column) with an A and each derived allele (fifth column) with a T
 gunzip -c with_geneflow.vcf.gz | awk 'BEGIN{OFS=FS="\t"}{ if(NR > 27) { $4="A"; $5="T"; print $0} else {print}};' | gzip -c > with_geneflow_nt.vcf.gz
 # convert the VCF to the Nexus format:
-python2 vcf2phylip.py -i with_geneflow_nt.vcf.gz -p --nexus
+vcf2phylip.py -i with_geneflow_nt.vcf.gz -p --nexus
 ```
 
-Then load the file `with_geneflow_nt.min4.nexus` into PAUP\*, again making sure the option "Execute" is set, then designate the outgroup, and finally run the Neighbor Joining tree reconstruction. You should get a tree like the one below:
+Then load the file `with_geneflow_nt.min4.nexus` into PAUP\*, designate the outgroup, and run the Neighbor Joining tree reconstruction.
+ 
+```bash
+# Load the data file in the nexus format:
+execute with_geneflow_nt.min4.nexus
+# See the "Taxon-status summary":
+tstatus
+# Assign the correct outgroup:
+Outgroup outgroup.0
+# Reconstruct the Neighbour-Joining tree:
+set criterion = distance;
+nj brlens = yes treefile=njtree_withGeneFlow.tre;
+``` 
+
+You should get a tree like the one below:
 
 <p align="center"><img src="img/with_geneflow_bases.min4_NJ.jpg" alt="PAUP\*" width="600"></p>
 
@@ -155,6 +169,14 @@ As you can see, the topology is in fact different from the Neighbor Joining, but
 <p align="center"><img src="img/with_geneflow_bases.min4_SVDQ.jpg" alt="PAUP\*" width="600"></p>
 
 </details>
+
+
+```bash
+# PAUP\* SVD quartets command
+svdq taxpartition=none showScores=no seed=1234568;
+# And save the tree to a file:
+savetrees file=SVDq_withGeneFlow.tre
+```
 
 <a name="TestingInSimulations"></a>
 ## 2. Testing for gene-flow in simulated data 
