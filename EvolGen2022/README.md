@@ -4,6 +4,8 @@ A tutorial on analyses of introgression and the effects of introgression on spec
 
 Milan Malinsky (millanek@gmail.com) 
 
+[AWS IP adresses](https://docs.google.com/spreadsheets/d/1NAN5mWYYEF67m2Bsebyh50m-sUVBX8AFEd7FcE9yPLA/edit?usp=sharing).
+
 ## Introduction
 
 Admixture between populations and introgression between species are common. Therefore a bifurcating tree is often insufficient to capture the full evolutionary history ([example](https://www.sciencedirect.com/science/article/pii/S0959437X16302052)). 
