@@ -4,7 +4,7 @@ A tutorial on analyses of introgression and the effects of introgression on spec
 
 Milan Malinsky (millanek@gmail.com) 
 
-[AWS IP adresses](https://docs.google.com/spreadsheets/d/1NAN5mWYYEF67m2Bsebyh50m-sUVBX8AFEd7FcE9yPLA/edit?usp=sharing).
+[AWS IP adresses](https://docs.google.com/spreadsheets/d/1NAN5mWYYEF67m2Bsebyh50m-sUVBX8AFEd7FcE9yPLA/edit?usp=sharing)
 
 ## Introduction
 
@@ -33,9 +33,11 @@ In this tutorial, we are first going to use simulated data to demonstrate that, 
 <a name="requirements"></a>
 ## Requirements
 
+* **Terminal and AWS connection:** The majority of bioinformatics happens in a UNIX evironment and often remotely in a High Performance Computing (HPC) environment. While many universities and research institutions maintain their own HPC infrastructure/clusters, there is an increasing trend towards using 'on-demand' compute in the cloud. To make this exercise realistic we have set up an [Amazon EC2](https://aws.amazon.com/ec2/) image with the required data/software and provided each of you with a running EC2 instance to which you should connect via terminal and ssh. You can find the IP address of your instance in [this spreadheet](https://docs.google.com/spreadsheets/d/1NAN5mWYYEF67m2Bsebyh50m-sUVBX8AFEd7FcE9yPLA/edit?usp=sharing).
+
 * **FigTree:** You should already have [FigTree](http://tree.bio.ed.ac.uk/software/figtree/) installed from last week. If not, you can download it for Mac OS X, Linux, and Windows from [https://github.com/rambaut/figtree/releases](https://github.com/rambaut/figtree/releases).
 
-* **Terminal and AWS connection:** The majority of bioinformatics happens in a UNIX evironment and often remotely in a High Performance Computing (HPC) environment. While many universities and research institutions maintain their own HPC infrastructure/clusters, there is an increasing trend towards using 'on-demand' compute in the cloud. To make this exercise realistic we have set up an [Amazon EC2](https://aws.amazon.com/ec2/) image with the required data/software and provided each of you with a running EC2 instance to which you should connect via terminal and ssh. You can find the IP address of your instance in [this spreadheet](https://docs.google.com/spreadsheets/d/1NAN5mWYYEF67m2Bsebyh50m-sUVBX8AFEd7FcE9yPLA/edit?usp=sharing).
+* **(optional) R:** The [R environment for statistical computing](https://www.r-project.org) is widely used by bioinformaticians and many other scientists. It implements many useful statistical distributions, tests, and has very nice capabilities for creating high quality scientific plots/figures. If you don't have it yet, I highly recommend [downloading](https://stat.ethz.ch/CRAN/) the latest version and installing it on your computer. Having said that, R is not strictly needed for this practical, because the plots with results are also available on this website. 
 
 <a name="simulation"></a>
 
@@ -432,11 +434,12 @@ In this execise, we are going to see if we can reproduce the findings reported b
 
 <p align="center"><img src="img/gante.png"></p>
 
-A dataset containing these species, but also six additional Neolamprologus species (for a total of 11) was used in the tutorials on [Species-Tree Inference with SNP Data](../species_tree_inference_with_snp_data/README.md) and [Divergence-Time Estimation with SNP Data](../divergence_time_estimation_with_snp_data/README.md).
+Here we use data with 10 Neolamprologus species (the clearly hybrid Neolamprologus cancellatus removed), to reassess the evidence for geneflow within this genus with the f4-ratio and f-branch statistics. The genetic data are in [`NC_031969.vcf.gz`](data/TanganyikaCichlids/NC_031969.vcf.gz). Start by reconstructing a species tree with PAUP\*, in the same way as you did for the simulated data above. 
 
 **Question 7:** Are the trees you reconstructed in these exercises consistent with the relationships reported by Gante et al.?
 
-Here we use data with 10 Neolamprologus species (the clearly hybrid Neolamprologus cancellatus removed), to reassess the evidence for geneflow within this genus with the f4-ratio and f-branch statistics. The genetic data are in [`NC_031969.vcf.gz`](data/TanganyikaCichlids/NC_031969.vcf.gz), the file specifying sample->species relationships is [`NC_031969_sets.txt`](data/TanganyikaCichlids/NC_031969_sets.txt) and the tree topology hypothesis is in [`SNAPP_tree.txt`](data/TanganyikaCichlids/SNAPP_tree.txt). We run the analysis for all possible trios as follows:
+
+Next, we are going to assess the evidence for introgression. The file specifying sample->species relationships is [`NC_031969_sets.txt`](data/TanganyikaCichlids/NC_031969_sets.txt) and the tree topology hypothesis is in [`SNAPP_tree.txt`](data/TanganyikaCichlids/SNAPP_tree.txt). We run the analysis for all possible trios as follows:
 
 ```bash
 Dsuite Dtrios -c -t SNAPP_tree.txt NC_031969.vcf.gz NC_031969_sets.txt
