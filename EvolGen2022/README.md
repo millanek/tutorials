@@ -214,15 +214,15 @@ The run takes about 50 minutes. Therefore, we already put the output files for y
 ```bash
 head species_sets_no_geneflow_BBAA.txt
 P1    P2    P3    Dstatistic    Z-score    p-value    f4-ratio    BBAA    ABBA    BABA
-S01    S02    S00    0.00645161    0.228337    0.409692    7.6296e-05    40635    936    924
-S01    S00    S03    0.0299321    1.08142    0.139754    0.000543936    28841    1724.75    1624.5
-S01    S00    S04    0.0072971    0.308069    0.379015    0.00013279    28889.2    1691    1666.5
-S01    S00    S05    0.00312175    0.133303    0.446977    5.6877e-05    28861.2    1687    1676.5
-S01    S00    S06    0.00312175    0.135082    0.446273    5.69626e-05    28876.5    1687    1676.5
-S01    S00    S07    0.00490269    0.210116    0.416789    8.92693e-05    28871.5    1691    1674.5
-S00    S01    S08    0.0613992    1.7814    0.0374237    0.000460113    45178.5    806    712.75
-S00    S01    S09    0.0704225    2.17799    0.0147034    0.000530632    45323    817    709.5
-S00    S01    S10    0.07982    2.25263    0.0121413    0.000589494    45131.8    810    690.25
+S01    S02    S00    0.00645161    0.228337    0.819384    7.49748e-05    40635    936    924
+S01    S00    S03    0.0299321    1.08142    0.279508    0.000536381    28841    1724.75    1624.5
+S01    S00    S04    0.0072971    0.308069    0.75803    0.000131022    28889.2    1691    1666.5
+S01    S00    S05    0.00312175    0.133303    0.893954    5.60938e-05    28861.2    1687    1676.5
+S01    S00    S06    0.00312175    0.135082    0.892547    5.62124e-05    28876.5    1687    1676.5
+S01    S00    S07    0.00490269    0.210116    0.833577    8.81153e-05    28871.5    1691    1674.5
+S00    S01    S08    0.0613992    1.7814    0.0748475    0.000454357    45178.5    806    712.75
+S00    S01    S09    0.0704225    2.17799    0.0294069    0.000524316    45323    817    709.5
+S00    S01    S10    0.07982    2.25263    0.0242825    0.000582453    45131.8    810    690.25
 ```
 
 Each row shows the results for the analysis of one trio. For example in the first row, species *S01* was used as P1, *S02* was considered as P2, and *S00* was placed in the position of P3. Then we see the D statistic, associated Zscore and p-value, the f4-ratio estimating admixture proportion and then the counts of BBAA sites (where  `S01` and  `S02` share the derived allele) and then the counts of ABBA and BABA sites. As you can see, ABBA is always more than BABA and the D statistic is always positive because Dsuite orients P1 and P2 in this way. Since these results are for coalescent simulations without gene-flow, the ABBA and BABA sites arise purely through incomplete lineage sorting and the difference between them is purely random - therefore, even though the D statistic can be quite high (e.g. up to 8% on the last line), this is not a result of gene flow. 
@@ -258,11 +258,11 @@ Let's first see how the other outputs differ from the  `_tree.txt` file, which h
 ```bash
 diff species_sets_no_geneflow_BBAA.txt species_sets_no_geneflow_tree.txt
 922c922
-< S08    S10    S09    0.0170473    1.22568    0.110159    0.00133751    6829.88    6764    6537.25
+< S08    S10    S09    0.0170473    1.22568    0.220318    0.00131754    6829.88    6764    6537.25
 ---
-> S09    S10    S08    0.0218914    1.73239    0.0416019    0.00172128    6764    6829.88    6537.25
+> S09    S10    S08    0.0218914    1.73239    0.0832039    0.00169718    6764    6829.88    6537.25
 ```
-There is one difference in the `_BBAA.txt` ile. Because of incomplete lineage sorting being a stochastic (random) process, we see that  `S08` and  `S10` share more derived alleles than `S09` and  `S10`, which are sister species in the input tree. If you look again at the input tree, you will see that  the branching order between `S08`,  `S09` and  `S10` is very rapid, it is almost a polytomy.
+There is one difference in the `_BBAA.txt` file. Because of incomplete lineage sorting being a stochastic (random) process, we see that  `S08` and  `S10` share more derived alleles than `S09` and  `S10`, which are sister species in the input tree. If you look again at the input tree, you will see that  the branching order between `S08`,  `S09` and  `S10` is very rapid, it is almost a polytomy.
 
 A comparison of the `_tree.txt` file against the `_Dmin.txt`, which minimises the Dstatistic, reveals nine differences. However, the correct trio arrangements in all these cases are very clear.
 
@@ -283,18 +283,18 @@ There are some very high D statistics. In fact, the D statistics for 9 trios are
 
 ```R
 D_BBAA_noGF[which(D_BBAA_noGF$Dstatistic > 0.7),]
-     P1  P2  P3 Dstatistic Z.score    p.value    f4.ratio   BBAA ABBA BABA
-171 S18 S19 S00   1.000000 0.00000        NaN 7.42372e-06 179922  1.5    0
-324 S18 S19 S01   1.000000 0.00000        NaN 7.42743e-06 179814  1.5    0
-460 S18 S19 S02   1.000000 0.00000        NaN 7.39892e-06 179800  1.5    0
-580 S18 S19 S03   1.000000 0.00000        NaN 7.43931e-06 179778  1.5    0
-685 S18 S19 S04   1.000000 0.00000        NaN 7.44097e-06 179765  1.5    0
-690 S06 S05 S11   0.833333 2.91667 0.00176897 4.94462e-05 138120 11.0    1
-776 S18 S19 S05   1.000000 0.00000        NaN 7.43290e-06 179768  1.5    0
-854 S18 S19 S06   1.000000 0.00000        NaN 7.44536e-06 179777  1.5    0
-920 S18 S19 S07   1.000000 0.00000        NaN 7.42259e-06 179771  1.5    0
+     P1  P2  P3 Dstatistic      Z.score    p.value    f4.ratio   BBAA ABBA BABA
+171 S18 S19 S00   1.000000 3.01176e-314        NaN 7.33365e-06 179922  1.5    0
+324 S18 S19 S01   1.000000 3.01176e-314        NaN 7.33100e-06 179814  1.5    0
+460 S18 S19 S02   1.000000 3.01176e-314        NaN 7.31256e-06 179800  1.5    0
+580 S18 S19 S03   1.000000 3.01176e-314        NaN 7.34992e-06 179778  1.5    0
+685 S18 S19 S04   1.000000 3.01176e-314        NaN 7.34833e-06 179765  1.5    0
+690 S06 S05 S11   0.833333  2.91667e+00 0.00353794 4.88206e-05 138120 11.0    1
+776 S18 S19 S05   1.000000 3.01176e-314        NaN 7.34066e-06 179768  1.5    0
+854 S18 S19 S06   1.000000 3.01176e-314        NaN 7.35210e-06 179777  1.5    0
+920 S18 S19 S07   1.000000 3.01176e-314        NaN 7.33584e-06 179771  1.5    0
 ```
-These nine cases arise because there is amost no incomplete lineage sorting among these trios almost all sites are `BBAA` - e.g. 179922 sites for the first trio, while the count for `ABBA` is only 1.5 and for `BABA` it is 0 . The D statistic is calculated as D = (ABBA-BABA)/(ABBA+BABA), which for the first trio would be D = (1.5-0)/(1.5+0)=1. So, the lesson here is that the D statistic is very sensitive to random fluctuations when there is a small number of ABBA and BABA sites. One certainly cannot take the D value seriously unless it is supported by a statistical test suggesting that the D is significanly different from 0. In the most extreme cases above, the p-value could not even be calculated, becuase there were so few sites. Those definitely do not represent geneflow. But in one case we see a p value of 0.0018. Well, that looks significant, if one considers for example the traditional 0.05 cutoff. So, again, how is this possible in a dataset simulated with no geneflow?
+These nine cases arise because there is amost no incomplete lineage sorting among these trios almost all sites are `BBAA` - e.g. 179922 sites for the first trio, while the count for `ABBA` is only 1.5 and for `BABA` it is 0 . The D statistic is calculated as D = (ABBA-BABA)/(ABBA+BABA), which for the first trio would be D = (1.5-0)/(1.5+0)=1. So, the lesson here is that the D statistic is very sensitive to random fluctuations when there is a small number of ABBA and BABA sites. One certainly cannot take the D value seriously unless it is supported by a statistical test suggesting that the D is significanly different from 0. In the most extreme cases above, the p-value could not even be calculated, becuase there were so few sites. Those definitely do not represent geneflow. But in one case we see a p value of 0.00353794. Well, that looks significant, if one considers the traditional 0.05 cutoff. So, again, how is this possible in a dataset simulated with no geneflow?
 
 ```R
 plot(D_BBAA_noGF$p.value, ylab="p value",xlab="trio number",ylim=c(0,0.05))
@@ -326,8 +326,8 @@ cut -f 2 species_sets.txt | uniq | head -n 20 > plot_order.txt
 Then make the plots using the scripts [`plot_d.rb`](src/plot_d.rb) and [`plot_f4ratio.rb`](src/plot_f4ratio.rb). 
 
 ```bash
-ruby plot_d.rb species_sets_no_geneflow_BBAA.txt plot_order.txt 0.7 species_sets_no_geneflow_BBAA_D.svg
-ruby plot_f4ratio.rb species_sets_no_geneflow_BBAA.txt plot_order.txt 0.2 species_sets_no_geneflow_BBAA_f4ratio.svg
+plot_d.rb species_sets_no_geneflow_BBAA.txt plot_order.txt 0.7 species_sets_no_geneflow_BBAA_D.svg
+plot_f4ratio.rb species_sets_no_geneflow_BBAA.txt plot_order.txt 0.2 species_sets_no_geneflow_BBAA_f4ratio.svg
 ```
 
 <p align="center"><img src="img/species_sets_no_geneflow_BBAA_Dandf4ratio.png" alt="DstatNoGF-PvalsCorrected\*" width="600"></p>
@@ -395,8 +395,8 @@ The scripts [`plot_d.rb`](src/plot_d.rb) and [`plot_f4ratio.rb`](src/plot_f4rati
 </p>
 
 ```bash
-ruby plot_d.rb species_sets_with_geneflow_BBAA.txt plot_order.txt 0.7 species_sets_with_geneflow_BBAA_D.svg
-ruby plot_f4ratio.rb species_sets_with_geneflow_BBAA.txt plot_order.txt 0.2 species_sets_with_geneflow_BBAA_f4ratio.svg
+plot_d.rb species_sets_with_geneflow_BBAA.txt plot_order.txt 0.7 species_sets_with_geneflow_BBAA_D.svg
+plot_f4ratio.rb species_sets_with_geneflow_BBAA.txt plot_order.txt 0.2 species_sets_with_geneflow_BBAA_f4ratio.svg
 ```
 
 <p align="center"><img src="img/species_sets_with_geneflow_BBAA_Dandf4ratio.png" alt="Dvals\*" width="600"></p>
