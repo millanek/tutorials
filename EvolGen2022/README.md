@@ -173,13 +173,27 @@ As you can see, the topology is in fact different from the Neighbor Joining, but
 
 </details>
 
-
 ```bash
+# Assign the correct outgroup:
+Outgroup outgroup.0
 # PAUP\* SVD quartets command
 svdq taxpartition=none showScores=no seed=1234568;
 # And save the tree to a file:
 savetrees file=SVDq_withGeneFlow.tre
 ```
+
+Finally, it is important to note that the above reconstructed trees are not really species trees, because they have multiple individuals per species. A real species-tree reconstruction approach would integrate data from both individuals for each species. The SVDquartets approach implemented in PAUP\* is capable of this, when we specify which individuals belong to which species. This is done using the file 'taxpartitions_simulated.nex' as shown below.
+
+```bash
+# Define 'taxpratitions' - i.e. partitions of individuals into taxa (which individuals belong to which species)
+execute taxpartitions_simulated.nex 
+# Assign the correct outgroup:
+Outgroup Outgroup simulatedspecies.OG
+# PAUP\* SVD quartets command
+svdq taxpartition=simulatedspecies showScores=no seed=1234568;
+# And save the tree to a file:
+savetrees file=SVDq_withGeneFlow_SpeciesTree.tre
+
 
 <a name="TestingInSimulations"></a>
 ## 2. Testing for gene-flow in simulated data 
