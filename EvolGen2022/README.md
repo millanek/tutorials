@@ -4,7 +4,9 @@ A tutorial on analyses of introgression and the effects of introgression on spec
 
 Milan Malinsky (millanek@gmail.com) 
 
-[AWS IP adresses](https://docs.google.com/spreadsheets/d/1NAN5mWYYEF67m2Bsebyh50m-sUVBX8AFEd7FcE9yPLA/edit?usp=sharing)
+[AWS IP adresses](https://docs.google.com/spreadsheets/d/1NAN5mWYYEF67m2Bsebyh50m-sUVBX8AFEd7FcE9yPLA/edit?usp=sharing); [Public key for ssh connection](data/EvolGenKey.pem)
+
+To connect: `ssh -i ~/EvolGenKey.pem ubuntu@YOUR-IP-HERE`
 
 ## Introduction
 
@@ -121,7 +123,7 @@ nj brlens = yes treefile=njtree_noGeneFlow.tre;
 The resulting tree is saved to `~/data/njtree_noGeneFlow.tre` on the virtual machine. Press `q` folowed by the `Enter/return` key to quit PAUP\*. Then, to copy the tree file to your computer (where you can view it in FigTree), you can use scp as follows:
 
 ```bash
-scp -i ~/EvolGenKey.pem ubuntu@YOUR-IP-HERE.us-east-2.compute.amazonaws.com:~/data/njtree_noGeneFlow.tre . 
+scp -i ~/EvolGenKey.pem ubuntu@YOUR-IP-HERE:~/data/njtree_noGeneFlow.tre . 
 ```
 
 As you can see by comparison of the tree you just reconstructed (also below) against [the input tree](img/simulated_tree_no_geneflow.pdf), a simple Neigbor Joining algorithm easily reconstructs the tree topology perfectly, and even the branch lengths are almost perfect. 
@@ -413,7 +415,7 @@ This is implemented in the `Dsuite Fbranch` subcommand, and the plotting utility
 
 ```bash
 Dsuite Fbranch simulated_tree_with_geneflow.nwk species_sets_with_geneflow_tree.txt > species_sets_with_geneflow_Fbranch.txt
-python3 /Users/milanmalinsky/Sanger_work/Dsuite/Dsuite/utils/dtools.py species_sets_with_geneflow_Fbranch.txt simulated_tree_with_geneflow.nwk
+dtools.py species_sets_with_geneflow_Fbranch.txt simulated_tree_with_geneflow.nwk
 ```
 
 The second command creates a file called `fbranch.png`, which is shown below.
@@ -439,24 +441,26 @@ Here we use data with 10 Neolamprologus species (the clearly hybrid Neolamprolog
 **Question 7:** Are the trees you reconstructed in these exercises consistent with the relationships reported by Gante et al.?
 
 
-Next, we are going to assess the evidence for introgression. The file specifying sample->species relationships is [`NC_031969_sets.txt`](data/TanganyikaCichlids/NC_031969_sets.txt) and the tree topology hypothesis is in [`SNAPP_tree.txt`](data/TanganyikaCichlids/SNAPP_tree.txt). We run the analysis for all possible trios as follows:
+Next, we are going to assess the evidence for introgression. The file specifying sample->species relationships is [`NC_031969_sets.txt`](data/TanganyikaCichlids/NC_031969_sets.txt) and one possible tree topology hypothesis is in [`SNAPP_tree.txt`](data/TanganyikaCichlids/SNAPP_tree.txt). To use the trees We run the analysis for all possible trios as follows:
 
 ```bash
 Dsuite Dtrios -c -t SNAPP_tree.txt NC_031969.vcf.gz NC_031969_sets.txt
 ```
 
+**Question 8:** Can you also use in Dsuite the trees you reconstructed in PAUP\*? What would you have to change in order to use them? 
+
 This should finish in a couple of minutes. There are 'only' ten species, so 120 trios. Could this be manageable? Have a look at the output file [TanganyikaCichlids/NC_031969_sets__tree.txt](data/TanganyikaCichlids/NC_031969_sets__tree.txt) and see if you can interpret the results. Chances are that is is still too complex to interpret the results for the trios just by looking at them. Perhaps you can try the ‘f-branch’ method:
 
 ```bash
 Dsuite Fbranch SNAPP_tree.txt NC_031969_sets__tree.txt > Tanganyika_Fbranch.txt
-python3 dtools.py Tanganyika_Fbranch.txt SNAPP_tree.txt
+dtools.py Tanganyika_Fbranch.txt SNAPP_tree.txt
 ```
 
 <p align="center"><img src="data/TanganyikaCichlids/fbranch.png"></p>
 
-**Question 8:** Are the geneflow signals seen here consistent with the Gante et al. figure?
+**Question 9:** Are the geneflow signals seen here consistent with the Gante et al. figure?
 
-**Question 9:** What happens when we focus only on the five species from Gante et al. and exclude all others?
+**Question 10:** What happens when we focus only on the five species from Gante et al. and exclude all other species?
 
 <details>
 <summary>Click here for an answer</summary>
@@ -466,7 +470,7 @@ The files [`NC_031969_setsOnlyGante.txt`](data/TanganyikaCichlids/NC_031969_sets
 ```bash
 Dsuite Dtrios -c -t SNAPP_tree.txt NC_031969.vcf.gz NC_031969_setsOnlyGante.txt
 Dsuite Fbranch GanteTree.txt NC_031969_setsOnlyGante__tree.txt > Tanganyika_Fbranch_reduced.txt
-python3 dtools.py -n reduced Tanganyika_Fbranch_reduced.txt GanteTree.txt 
+dtools.py -n reduced Tanganyika_Fbranch_reduced.txt GanteTree.txt 
 ```
 Notice the `-n` option to `dtools.py`, to specify the output file name, making sure that our previous plots are not overwritten. Below is the plot, after a little editing in Inkscape.
 
