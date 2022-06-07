@@ -48,8 +48,11 @@ For this exercise, we have simulated SNP data for 20 species in the VCF format, 
 
 There are two datasets. First a simulation without gene-flow ([VCF](data/chr1_no_geneflow.vcf.gz), true tree: [image](img/simulated_tree_no_geneflow.pdf), [newick](data/simulated_tree_no_geneflow.nwk), [json](data/simulated_tree_no_geneflow.nwk.mass_migrations.json)), and second, a simulation where five gene-flow events have been added to a tree ([VCF](data/with_geneflow.vcf.gz), true tree with gene-flow: [image](img/simulated_tree_with_geneflow.pdf), [newick](data/simulated_tree_with_geneflow.nwk), [json](data/simulated_tree_with_geneflow.nwk.mass_migrations.json)).      
 
+
+The theory and practice of simulating population genomic data will be covered in detail next week on Thursday by Georgia Tsambos.
+
 <details>
-  <summary>If you are interested in detail about how to simulate phylogenomic data with msprime, click here</summary>
+  <summary>If you are interested in detail about how this specific phylogenomic dataset was simulated with msprime, click here</summary>
   
   It is in principle possible to simulate data from an arbitrary phylogeny with msprime, but specifying the phylogenetic tree directly in the program is complicated. Therefore, a number of 'helper' wrapper programs have been developed that can make this task much easier for us. For this exercise, we use Hannes Svardal's [pypopgen3](https://github.com/feilchenfeldt/pypopgen3). After installing pypogen3 and its dependencies, using the instructions on the webpage, we simulated the data using the following code:
   
@@ -88,8 +91,6 @@ There are two datasets. First a simulation without gene-flow ([VCF](data/chr1_no
 ```
   
 </details>
-
-The theory and practice of simulating population genomic data will be covered in detail next week on Thursday by Georgia Tsambos.
 
 <a name="ReconstructingFromSimulation"></a>
 ## 1. Reconstructing phylogenies from simulated data
