@@ -8,7 +8,7 @@ Milan Malinsky (millanek@gmail.com)
 
 Admixture between populations and introgression between species are common. Therefore a bifurcating tree is often insufficient to capture the full evolutionary history ([example](https://www.sciencedirect.com/science/article/pii/S0959437X16302052)). 
 
-Patterson’s D, also known as ABBA-BABA, and the related estimate of admixture fraction <i>f</i>, referred to as the f4-ratio are commonly used to assess evidence of gene flow between populations or closely related species in genomic datasets. They are based on examining patterns of allele sharing across populations or closely related species. Although they were developed in within a population genetic framework the methods can be successfully applied for learning about hybridisation and introgression within groups of closely related species, as long as common population genetic assumptions hold – namely that (a) the species share a substantial amount of genetic variation due to common ancestry and incomplete lineage sorting; (b) recurrent and back mutations at the same sites are negligible; and (c) substitution rates are uniform across species.
+Patterson’s D, also known as ABBA-BABA, and the related estimate of admixture fraction <i>f</i>, referred to as the f4-ratio, are commonly used to assess evidence of gene flow between populations or closely related species in genomic datasets. They are based on examining patterns of allele sharing across populations or closely related species. Although they were developed in within a population genetic framework the methods can be successfully applied for learning about hybridisation and introgression within groups of closely related species, as long as common population genetic assumptions hold – namely that (a) the species share a substantial amount of genetic variation due to common ancestry and incomplete lineage sorting; (b) recurrent and back mutations at the same sites are negligible; and (c) substitution rates are uniform across species.
 
 Patterson's D and related statistics have also been used to identify introgressed loci by sliding window scans along the genome, or by calculating these statistics for particular short genomic regions. Because the D statistic itself has large variance when applied to small genomic windows and because it is a poor estimator of the amount of introgression, additional statistics which are related to the f4-ratio have been designed specifically to investigate signatures of introgression in genomic windows along chromosomes. These statistics include <i>f</i><sub>d</sub> (Martin et al., 2015), its extension <i>f</i><sub>dM</sub> (Malinsky et al., 2015), and the distance fraction <i>d</i><sub>f</sub> (Pfeifer & Kapan, 2019).
 
@@ -33,9 +33,9 @@ In this tutorial, we are first going to use simulated data to demonstrate that, 
 <a name="requirements"></a>
 ## Practical information
 
-* **Terminal and AWS connection:** For most of the exercise, you will only need an ssh connection into your AWS instance. The data are alocated in `~/workshop_materials/a08_d_statistics`. 
+* **Terminal and AWS connection:** For most of the exercise, you will only need an ssh connection into your AWS instance. The data are located in `~/workshop_materials/a08_d_statistics`. It may also be useful to use the R studio connection at: `http://ec2-XX-XXX-XXX-XXX.compute-1.amazonaws.com:8787` 
 
-* **FigTree:** You should already have [FigTree](http://tree.bio.ed.ac.uk/software/figtree/) installed from last week. If not, you can download it for Mac OS X, Linux, and Windows from [https://github.com/rambaut/figtree/releases](https://github.com/rambaut/figtree/releases).
+* **FigTree:** FigTree is a software for visualising trees. If you do not have FigTree you can download it for Mac OS X, Linux, and Windows from [https://github.com/rambaut/figtree/releases](https://github.com/rambaut/figtree/releases). It is also available on the instances where you can use it via Guacamole.
 
 <a name="simulation"></a>
 
@@ -92,7 +92,7 @@ There are two datasets. First a simulation without gene-flow ([VCF](data/chr1_no
 <a name="ReconstructingFromSimulation"></a>
 ## 1. Reconstructing phylogenies from simulated data
 
-Now we apply the phylogentic (or phylogenomic) approaches that we have learned to the simulated SNP data to see if we can recover the phylogentic trees that were used as input to the simulations. We are going to use algorithms implemented in [PAUP\*](http://phylosolutions.com/paup-test/). 
+We start by appling a couple of simple phylogentic (or phylogenomic) approaches to see if we can recover the trees that were used as input to the simulations. We are going to use algorithms implemented in [PAUP\*](http://phylosolutions.com/paup-test/). 
 
 Our msprime simulation did not use any specific [substitution model](https://en.wikipedia.org/wiki/Models_of_DNA_evolution) for mutations, but simply designated alleles as `0` for ancestral and `1` for derived. The alleles are indicated in the fourth (REF) and fifth (ALT) column of the VCF as per the [VCF file format](https://samtools.github.io/hts-specs/VCFv4.2.pdf). To use PAUP\* we first need to convert the the VCF into the Nexus format, and this needs the  `0` and `1` alleles to be replaced by actual DNA bases. We can use the [vcf2phylip.py](src/vcf2phylip.py) python script and achieve these steps as follows, first for the dataset simulated without gene-flow:
 
@@ -119,8 +119,10 @@ nj brlens = yes treefile=njtree_noGeneFlow.tre;
 The resulting tree is saved to `~/data/njtree_noGeneFlow.tre` on the virtual machine. Press `q` folowed by the `Enter/return` key to quit PAUP\*. Then, to copy the tree file to your computer (where you can view it in FigTree), you can use scp as follows:
 
 ```bash
-scp -i ~/EvolGenKey.pem ubuntu@YOUR-IP-HERE:~/data/njtree_noGeneFlow.tre . 
+scp wpsg@ec2-XX-XXX-XXX-XXX.compute-1.amazonaws.com:~/workshop_materials/a08_d_statistics/njtree_noGeneFlow.tre . 
 ```
+
+Alternatively, you can visualise the tree via Guacamole.
 
 As you can see by comparison of the tree you just reconstructed (also below) against [the input tree](img/simulated_tree_no_geneflow.pdf), a simple Neigbor Joining algorithm easily reconstructs the tree topology perfectly, and even the branch lengths are almost perfect. 
 
@@ -158,7 +160,7 @@ You should get a tree like the one below:
 
 <p align="center"><img src="img/with_geneflow_bases.min4_NJ.jpg" alt="PAUP\*" width="600"></p>
 
-An examination of this reconstructed tree reveals that in this case we did not recover the topology of the [true tree](img/simulated_tree_with_geneflow.pdf) used as input to the simulation. Unlike in the true tree, in the reconstructed tree species  `S14` is "pulled outside" the group formed by  `S13,S15,S16`. This is most likely because of the gene-flow that `S14` received from `S00`. This is a typical pattern: when one species from within a group receives introgression from another group, it tends to be "pulled out" like this in phylogenetic reconstruction. One argument that could be made here is that the Neighbor Joining algorithm is outdated, and that perhaps newer, more sophisticated, methods would recover the correct tree. You can now try to apply SVDQuartets in PAUP\*, and also try any of the other phylogenomic methods you know to see if any of these will succeed.
+An examination of this reconstructed tree reveals that in this case we did not recover the topology of the [true tree](img/simulated_tree_with_geneflow.pdf) used as input to the simulation. Unlike in the true tree, in the reconstructed tree species  `S14` is "pulled outside" the group formed by  `S13,S15,S16`. This is most likely because of the gene-flow that `S14` received from `S00`. This is a typical pattern: when one species from within a group receives introgression from another group, it tends to be "pulled out" like this in phylogenetic reconstruction. One argument that could be made here is that the Neighbor Joining algorithm is outdated, and that perhaps newer, more sophisticated, methods would recover the correct tree. You can now try to apply SVDQuartets in PAUP\*, and also try any of the other phylogenomic methods you may know to see if any of these will succeed.
 
 <details>
 <summary>Click here to see the reconstructed SVDQuartets tree with gene-flow</summary>
@@ -190,6 +192,9 @@ svdq taxpartition=simulatedspecies showScores=no seed=1234568;
 # And save the tree to a file:
 savetrees file=SVDq_withGeneFlow_SpeciesTree.tre
 ```
+
+A more comprehensive tutorial on species tree reconstruction is prepared for tomorrow afternoon.
+
 
 <a name="TestingInSimulations"></a>
 ## 2. Testing for gene-flow in simulated data 
