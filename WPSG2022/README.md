@@ -33,7 +33,7 @@ In this tutorial, we are first going to use simulated data to demonstrate that, 
 <a name="requirements"></a>
 ## Practical information
 
-* **Terminal and AWS connection:** For most of the exercise, you will only need an ssh connection into your AWS instance. The data are alocated in `~/workshop_materials/a08_d_statistics`
+* **Terminal and AWS connection:** For most of the exercise, you will only need an ssh connection into your AWS instance. The data are alocated in `~/workshop_materials/a08_d_statistics`. 
 
 * **FigTree:** You should already have [FigTree](http://tree.bio.ed.ac.uk/software/figtree/) installed from last week. If not, you can download it for Mac OS X, Linux, and Windows from [https://github.com/rambaut/figtree/releases](https://github.com/rambaut/figtree/releases).
 
@@ -488,3 +488,86 @@ Notice the `-n` option to `dtools.py`, to specify the output file name, making s
 
 </details>
 
+<a name="SpecificLoci"></a>
+## 4. Finding specific introgressed loci - adaptive introgression in Malawi cichlids
+
+This exercise is based on analysis from the [Malinsky et al. (2018)](https://doi.org/10.1038/s41559-018-0717-x) manuscript published in Nature Ecol. Evo.. The paper shows that two deep water adapted lineages of cichlids share signatures of selection and very similar haplotypes in two green-sensitive opsin genes (RH2Aβ and RH2B). The genes are located next to each other on scaffold_18. To find out whether these shared signatures are the result of convergent evolution or of adaptive introgression, we used the f_dM statistic. The f_dM is related to Patterson’s D and to the f4-ratio, but is better suited to analyses of sliding genomic windows. The calculation of this statistic is implemented in the program `Dsuite Dinvestigate`.
+
+The data for this exercise are in the [data](data/) folder. It includes the VCF file with variants mapping to the scaffold_18 of the Malawi cichlid reference genome we used at the time - [`scaffold_18.vcf.gz`](data/scaffold_18.vcf.gz). There are also two other files required to run Dinvestigate: the “SETS” file and the “test_trios” file. In this case they are called: [`MalawiSetsFile.txt`](data/MalawiSetsFile.txt) and [`MalawiTestTriosForInvestigate.txt`](data/MalawiTestTriosForInvestigate.txt). The “TestTrios” file specifies that we want to investigate the admixture signal between the Diplotaxodon genus and the deep benthic group, compared with the mbuna group. The “SETS” file specifies which individuals belong to these groups. Finally, the command to execute the analysis is:
+
+```bash
+Dsuite Dinvestigate -w 50,25 scaffold_18.vcf.gz MalawiSetsFile.txt MalawiTestTriosForInvestigate.txt
+```
+
+The `-w 50,25` option specifies that the statistics should be averaged over windows of 50 informative SNPs, moving forward by 25 SNPs at each step. The run should take a little under 10 minutes. We suggest you have a tea/coffee break while you wait for the results ;).
+
+**Question 11:**  What are the overall D and f_dM values over the entire scaffold_18? What does this suggest?
+
+The results are output by Dsuite into the file `mbuna_deep_Diplotaxodon_localFstats__50_25.txt`. A little R plotting function [`plotInvestigateResults.R`](src/plotInvestigateResults.R) is prepared for you. Use the script to load in the file you just produced (line 3) and plot the D statistic (line 6).  Also execute line 8 of the script to plot the f_dM values. Do you see any signal near the opsin coordinates? We also plot the f_d statistic. As you can see, the top end of the plot is the same as for the f_dM, but the f_d is asymmetrical, extending far further into negative values. 
+
+**Question 12:** Do you see any interesting signal in the D, f_dM, and f_d statistics? The opsin genes are located between 4.3Mb and 4.4Mb. Do you see anything interesting there?
+
+<details>
+<summary>Click here to see the resulting R plots</summary>
+
+<p align="center"><img src="data/Dinvestigate_bigWindow.png" alt="\*" width="600"></p>
+
+You could also plot the new d_f statistic? Doe that look any better?
+
+</details>
+
+Finally, we zoom in at the region of the opsin genes (line 12). As you can see, the results look like a single “mountain” extending over 100kb.
+
+<details>
+<summary>Click here to see the zoom in with `-w 50,25`</summary>
+
+<p align="center"><img src="data/Dinvestigate_zoom.png" alt="\*" width="600"></p>
+
+</details>
+
+
+But there is more structure than that in the region. Perhaps we need to reduce the window or step size to see a greater level of detai.
+
+To save time, we prepared result files for runs with varying window and step sizes: [`mbuna_deep_Diplotaxodon_localFstats__50_5.txt`](data/mbuna_deep_Diplotaxodon_localFstats__50_5.txt),  [`mbuna_deep_Diplotaxodon_localFstats__50_1.txt`](data/mbuna_deep_Diplotaxodon_localFstats__50_1.txt),  [`mbuna_deep_Diplotaxodon_localFstats__10_1.txt`](data/mbuna_deep_Diplotaxodon_localFstats__10_1.txt), and  [`mbuna_deep_Diplotaxodon_localFstats__2_1.txt`](data/mbuna_deep_Diplotaxodon_localFstats__2_1.txt).
+
+ They can be plotted with the same R script. Have a look at the results.
+ 
+ <details>
+ <summary>Click here to see the zoom in with `-w 50,5`</summary>
+
+ <p align="center"><img src="data/Dinvestigate_zoom50_5.png" alt="\*" width="600"></p>
+
+ </details>
+ 
+ <details>
+ <summary>Click here to see the zoom in with `-w 50,1`</summary>
+
+ <p align="center"><img src="data/Dinvestigate_zoom50_1.png" alt="\*" width="600"></p>
+
+ </details>
+ 
+  <details>
+ <summary>Click here to see the zoom in with `-w 10,1`</summary>
+
+ <p align="center"><img src="data/Dinvestigate_zoom10_1.png" alt="\*" width="600"></p>
+
+ </details>
+ 
+ <details>
+
+ <summary>Click here to see the zoom in with `-w 2,1`</summary>
+
+ <p align="center"><img src="data/Dinvestigate_zoom2_1.png" alt="\*" width="600"></p>
+
+ </details>
+
+**Question 13:** What combination of window size/step seems to have the best resolution? Why is the smallest window so noisy?
+
+**Question 14:** What happens if you plot individual data points, instead of a continuous line? Are the results clearer?
+
+ <details>
+<summary>Click here to see the zoom in with `-w 10,1` and individual data points</summary>
+
+<p align="center"><img src="data/Dinvestigate_zoom10_1_points.png" alt="\*" width="600"></p>
+
+</details>
