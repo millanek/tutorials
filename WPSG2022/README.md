@@ -1,18 +1,16 @@
-# Evolutionary Genomics 2022 - Introgression and Species Tree Reconstruction
+# WPSG 2022 - Analyses of Introgression with SNP Data
 
 A tutorial on analyses of introgression and the effects of introgression on species tree reconstruction 
 
 Milan Malinsky (millanek@gmail.com) 
 
-[AWS IP adresses](https://docs.google.com/spreadsheets/d/1NAN5mWYYEF67m2Bsebyh50m-sUVBX8AFEd7FcE9yPLA/edit?usp=sharing); [Public key for ssh connection](data/EvolGenKey.pem)
-
-To connect: `ssh -i ~/EvolGenKey.pem ubuntu@YOUR-IP-HERE`
-
 ## Introduction
 
 Admixture between populations and introgression between species are common. Therefore a bifurcating tree is often insufficient to capture the full evolutionary history ([example](https://www.sciencedirect.com/science/article/pii/S0959437X16302052)). 
 
-Patterson’s D, also known as ABBA-BABA, and the related estimate of admixture fraction <i>f</i>, referred to as the f4-ratio are commonly used to assess evidence of gene flow between populations or closely related species in genomic datasets. They are based on examining patterns of allele sharing across populations or closely related species. Although they were developed in within a population genetic framework the methods can be successfully applied for learning about hybridisation and introgression within groups of closely related species, as long as common population genetic assumptions hold – namely that (a) the species share a substantial amount of genetic variation due to common ancestry and incomplete lineage sorting; (b) recurrent and back mutations at the same sites are negligible; and (c) substitution rates are uniform across species. 
+Patterson’s D, also known as ABBA-BABA, and the related estimate of admixture fraction <i>f</i>, referred to as the f4-ratio are commonly used to assess evidence of gene flow between populations or closely related species in genomic datasets. They are based on examining patterns of allele sharing across populations or closely related species. Although they were developed in within a population genetic framework the methods can be successfully applied for learning about hybridisation and introgression within groups of closely related species, as long as common population genetic assumptions hold – namely that (a) the species share a substantial amount of genetic variation due to common ancestry and incomplete lineage sorting; (b) recurrent and back mutations at the same sites are negligible; and (c) substitution rates are uniform across species.
+
+Patterson's D and related statistics have also been used to identify introgressed loci by sliding window scans along the genome, or by calculating these statistics for particular short genomic regions. Because the D statistic itself has large variance when applied to small genomic windows and because it is a poor estimator of the amount of introgression, additional statistics which are related to the f4-ratio have been designed specifically to investigate signatures of introgression in genomic windows along chromosomes. These statistics include <i>f</i><sub>d</sub> (Martin et al., 2015), its extension <i>f</i><sub>dM</sub> (Malinsky et al., 2015), and the distance fraction <i>d</i><sub>f</sub> (Pfeifer & Kapan, 2019).
 
 ## Table of contents
 
@@ -24,22 +22,20 @@ Patterson’s D, also known as ABBA-BABA, and the related estimate of admixture 
 * [2.1 Do we find geneflow in data simulated without geneflow?](#TestingWithoutGeneflow)
 * [2.2 Do we find geneflow in data simulated with geneflow?](#TestingWithGeneflow)
 * [3. Finding geneflow in a real dataset - Tanganyikan cichlids](#Tanganyika)
-
+* [4. Finding specific introgressed loci - adaptive introgression in Malawi cichlids](#SpecificLoci)
 <!--- * [Dataset](#dataset)-->
 
 <a name="outline"></a>
 ## Outline
 
-In this tutorial, we are first going to use simulated data to demonstrate that, under gene-flow, some inferred species relationships might not correspond to any real biologial relationships. Then we are going to use [Dsuite](https://doi.org/10.1111/1755-0998.13265), a software package that implements Patterson’s D and related statistics in a way that is straightforward to use and computationally efficient. This will allow us to identify admixed taxa. While exploring Dsuite, we are also going to learn or revise concepts related to application, calculation, and interpretation of the D and of related statistics. Finally, we analyse a Lake Tanganyika cichlid dataset to see if we reach the same conclusions as a 2016 manuscript which used a more limited dataset with fewer species. 
+In this tutorial, we are first going to use simulated data to demonstrate that, under gene-flow, some inferred species relationships might not correspond to any real biologial relationships. Then we are going to use [Dsuite](https://doi.org/10.1111/1755-0998.13265), a software package that implements Patterson’s D and related statistics in a way that is straightforward to use and computationally efficient. This will allow us to identify admixed taxa. While exploring Dsuite, we are also going to learn or revise concepts related to application, calculation, and interpretation of the D and of related statistics. Next, we analyse a real-world Lake Tanganyika cichlid dataset to see if we reach the same conclusions as a 2016 manuscript which used a more limited dataset with fewer species. Finally, we apply sliding-window statistics to identify particular introgressed loci in a real dataset of Malawi cichlid fishes.
 
 <a name="requirements"></a>
-## Requirements
+## Practical information
 
-* **Terminal and AWS connection:** The majority of bioinformatics happens in a UNIX evironment and often remotely in a High Performance Computing (HPC) environment. While many universities and research institutions maintain their own HPC infrastructure/clusters, there is an increasing trend towards using 'on-demand' compute in the cloud. To make this exercise realistic we have set up an [Amazon EC2](https://aws.amazon.com/ec2/) image with the required data/software and provided each of you with a running EC2 instance to which you should connect via terminal and ssh. You can find the IP address of your instance in [this spreadheet](https://docs.google.com/spreadsheets/d/1NAN5mWYYEF67m2Bsebyh50m-sUVBX8AFEd7FcE9yPLA/edit?usp=sharing).
+* **Terminal and AWS connection:** For most of the exercise, you will only need an ssh connection into your AWS instance. The data are alocated in `~/workshop_materials/a08_d_statistics`
 
 * **FigTree:** You should already have [FigTree](http://tree.bio.ed.ac.uk/software/figtree/) installed from last week. If not, you can download it for Mac OS X, Linux, and Windows from [https://github.com/rambaut/figtree/releases](https://github.com/rambaut/figtree/releases).
-
-* **(optional) R:** The [R environment for statistical computing](https://www.r-project.org) is widely used by bioinformaticians and many other scientists. It implements many useful statistical distributions, tests, and has very nice capabilities for creating high quality scientific plots/figures. If you don't have it yet, I highly recommend [downloading](https://stat.ethz.ch/CRAN/) the latest version and installing it on your computer. Having said that, R is not strictly needed for this practical, because the plots with results are also available on this website. 
 
 <a name="simulation"></a>
 
