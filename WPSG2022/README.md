@@ -89,6 +89,8 @@ There are two datasets. First a simulation without gene-flow ([VCF](data/chr1_no
   
 </details>
 
+The theory and practice of simulating population genomic data will be covered in detail next week on Thursday by Georgia Tsambos.
+
 <a name="ReconstructingFromSimulation"></a>
 ## 1. Reconstructing phylogenies from simulated data
 
@@ -193,7 +195,7 @@ svdq taxpartition=simulatedspecies showScores=no seed=1234568;
 savetrees file=SVDq_withGeneFlow_SpeciesTree.tre
 ```
 
-A more comprehensive tutorial on species tree reconstruction is prepared for tomorrow afternoon.
+A more comprehensive tutorial on species tree reconstruction is prepared for tomorrow afternoon by Micheal Matschiner and the Workshop Team.
 
 
 <a name="TestingInSimulations"></a>
