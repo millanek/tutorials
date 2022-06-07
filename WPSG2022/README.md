@@ -119,7 +119,7 @@ set criterion = distance;
 nj brlens = yes treefile=njtree_noGeneFlow.tre;
 ```
 
-The resulting tree is saved to `~/data/njtree_noGeneFlow.tre` on the virtual machine. Press `q` folowed by the `Enter/return` key to quit PAUP\*. Then, to copy the tree file to your computer (where you can view it in FigTree), you can use scp as follows:
+The resulting tree is saved to `~/workshop_materials/a08_d_statistics/njtree_noGeneFlow.tre` on the virtual machine. Press `q` folowed by the `Enter/return` key to quit PAUP\*. Then, to copy the tree file to your computer (where you can view it in FigTree), you can use scp as follows:
 
 ```bash
 scp wpsg@ec2-XX-XXX-XXX-XXX.compute-1.amazonaws.com:~/workshop_materials/a08_d_statistics/njtree_noGeneFlow.tre . 
