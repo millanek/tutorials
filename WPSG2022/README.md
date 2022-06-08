@@ -370,10 +370,10 @@ You can run this analysis using the command below (this should be done within on
 Dsuite Dtrios with_geneflow_9_10_11.vcf.gz species_sets_9_10_11.txt
 ```
 
-Checking the results in the output file `species_sets_9_10_11_BBAA.txt`, we see `D=0.805219` and p-value of `< 2 * 10<sup>-16</sup>`
+Checking the results in the output file `species_sets_9_10_11_BBAA.txt`, we see `D=0.805219` and p-value of  2 \* 10<sup>-16</sup>. Also the f4-ratio statistic is highly elevated at `f4-ratio=0.095`. We can conclude that these values are substantially more convincing than anything we saw in the no-gene-flow case. 
 
 
-How do the overall results for the simulation with geneflow differ from the above? Here we are going to run a similar set of analyses and make comparisons. We run Dsuite for the entire dataset with gene-flow as follows:
+However, we often have more than three species to consider. How do the overall, 20 species results for the simulation with geneflow differ from the above non-gene-flow case? Here we are going to run a similar set of analyses and make comparisons. We run Dsuite for the entire dataset with gene-flow as follows:
 
 ```bash
 Dsuite Dtrios -c -n with_geneflow -t simulated_tree_with_geneflow.nwk with_geneflow.vcf.gz species_sets.txt 
