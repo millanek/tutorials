@@ -230,7 +230,7 @@ We run Dsuite for the dataset without gene-flow as follows:
 ```bash
 Dsuite Dtrios -c -n no_geneflow -t simulated_tree_no_geneflow.nwk chr1_no_geneflow.vcf.gz species_sets.txt 
 ```
-The run takes about 50 minutes. Therefore, we already put the output files for you in the [data](data/) folder.  Let's have a look at the first few lines of  [`species_sets_no_geneflow_BBAA.txt`](data/species_sets_no_geneflow_BBAA.txt):
+The run takes about 50 minutes. Therefore, we already put the output files for you in the `~/workshop_materials/a08_d_statistics/precomputed_results` folder on the instance.  Let's have a look at the first few lines of  [`species_sets_no_geneflow_BBAA.txt`](data/species_sets_no_geneflow_BBAA.txt):
 
 ```bash
 head species_sets_no_geneflow_BBAA.txt
@@ -294,6 +294,7 @@ diff species_sets_no_geneflow_Dmin.txt species_sets_no_geneflow_tree.txt
 Next, let's look at the results in more detail, for example in [R](https://www.r-project.org). We load the `_BBAA.txt` file and first look at the distribution of D values:  
 
 ```R
+
 D_BBAA_noGF <- read.table("species_sets_no_geneflow_BBAA.txt",as.is=T,header=T)
 plot(D_BBAA_noGF$Dstatistic, ylab="D",xlab="trio number")
 ```
@@ -466,9 +467,7 @@ Next, we are going to assess the evidence for introgression. The file specifying
 Dsuite Dtrios -c -t SNAPP_tree.txt NC_031969.vcf.gz NC_031969_sets.txt
 ```
 
-**Question 8:** Can you also use in Dsuite the trees you reconstructed in PAUP\*? What would you have to change in order to use them? 
-
-This should finish in a couple of minutes. There are 'only' ten species, so 120 trios. Could this be manageable? Have a look at the output file [TanganyikaCichlids/NC_031969_sets__tree.txt](data/TanganyikaCichlids/NC_031969_sets__tree.txt) and see if you can interpret the results. Chances are that is is still too complex to interpret the results for the trios just by looking at them. Perhaps you can try the ‘f-branch’ method:
+This should finish in a couple of minutes. There are 'only' ten species, so 120 trios. Could this be manageable? Have a look at the output file [NC_031969_sets_tree.txt](data/TanganyikaCichlids/NC_031969_sets__tree.txt) and see if you can interpret the results. Chances are that is is still too complex to interpret the results for the trios just by looking at them. Perhaps you can try the ‘f-branch’ method:
 
 ```bash
 Dsuite Fbranch SNAPP_tree.txt NC_031969_sets__tree.txt > Tanganyika_Fbranch.txt
@@ -477,9 +476,9 @@ dtools.py Tanganyika_Fbranch.txt SNAPP_tree.txt
 
 <p align="center"><img src="data/TanganyikaCichlids/fbranch.png"></p>
 
-**Question 9:** Are the geneflow signals seen here consistent with the Gante et al. figure?
+**Question 8:** Are the geneflow signals seen here consistent with the Gante et al. figure?
 
-**Question 10:** What happens when we focus only on the five species from Gante et al. and exclude all other species?
+**Question 9:** What happens when we focus only on the five species from Gante et al. and exclude all other species?
 
 <details>
 <summary>Click here for an answer</summary>
@@ -502,7 +501,7 @@ Notice the `-n` option to `dtools.py`, to specify the output file name, making s
 
 This exercise is based on analysis from the [Malinsky et al. (2018)](https://doi.org/10.1038/s41559-018-0717-x) manuscript published in Nature Ecol. Evo.. The paper shows that two deep water adapted lineages of cichlids share signatures of selection and very similar haplotypes in two green-sensitive opsin genes (RH2Aβ and RH2B). The genes are located next to each other on scaffold_18. To find out whether these shared signatures are the result of convergent evolution or of adaptive introgression, we used the f_dM statistic. The f_dM is related to Patterson’s D and to the f4-ratio, but is better suited to analyses of sliding genomic windows. The calculation of this statistic is implemented in the program `Dsuite Dinvestigate`.
 
-The data for this exercise are in the [data](data/) folder. It includes the VCF file with variants mapping to the scaffold_18 of the Malawi cichlid reference genome we used at the time - [`scaffold_18.vcf.gz`](data/scaffold_18.vcf.gz). There are also two other files required to run Dinvestigate: the “SETS” file and the “test_trios” file. In this case they are called: [`MalawiSetsFile.txt`](data/MalawiSetsFile.txt) and [`MalawiTestTriosForInvestigate.txt`](data/MalawiTestTriosForInvestigate.txt). The “TestTrios” file specifies that we want to investigate the admixture signal between the Diplotaxodon genus and the deep benthic group, compared with the mbuna group. The “SETS” file specifies which individuals belong to these groups. Finally, the command to execute the analysis is:
+The data for this exercise are on the instances in the `~/workshop_materials/a08_d_statistics/Dinvestigate_Malawi` folder. It includes the VCF file with variants mapping to the scaffold_18 of the Malawi cichlid reference genome we used at the time - [`scaffold_18.vcf.gz`](data/scaffold_18.vcf.gz). There are also two other files required to run Dinvestigate: the “SETS” file and the “test_trios” file. In this case they are called: [`MalawiSetsFile.txt`](data/MalawiSetsFile.txt) and [`MalawiTestTriosForInvestigate.txt`](data/MalawiTestTriosForInvestigate.txt). The “TestTrios” file specifies that we want to investigate the admixture signal between the Diplotaxodon genus and the deep benthic group, compared with the mbuna group. The “SETS” file specifies which individuals belong to these groups. Finally, the command to execute the analysis is:
 
 ```bash
 Dsuite Dinvestigate -w 50,25 scaffold_18.vcf.gz MalawiSetsFile.txt MalawiTestTriosForInvestigate.txt
@@ -510,11 +509,11 @@ Dsuite Dinvestigate -w 50,25 scaffold_18.vcf.gz MalawiSetsFile.txt MalawiTestTri
 
 The `-w 50,25` option specifies that the statistics should be averaged over windows of 50 informative SNPs, moving forward by 25 SNPs at each step. The run should take a little under 10 minutes. We suggest you have a tea/coffee break while you wait for the results ;).
 
-**Question 11:**  What are the overall D and f_dM values over the entire scaffold_18? What does this suggest?
+**Question 10:**  What are the overall D and f_dM values over the entire scaffold_18? What does this suggest?
 
 The results are output by Dsuite into the file `mbuna_deep_Diplotaxodon_localFstats__50_25.txt`. A little R plotting function [`plotInvestigateResults.R`](src/plotInvestigateResults.R) is prepared for you. Use the script to load in the file you just produced (line 3) and plot the D statistic (line 6).  Also execute line 8 of the script to plot the f_dM values. Do you see any signal near the opsin coordinates? We also plot the f_d statistic. As you can see, the top end of the plot is the same as for the f_dM, but the f_d is asymmetrical, extending far further into negative values. 
 
-**Question 12:** Do you see any interesting signal in the D, f_dM, and f_d statistics? The opsin genes are located between 4.3Mb and 4.4Mb. Do you see anything interesting there?
+**Question 11:** Do you see any interesting signal in the D, f_dM, and f_d statistics? The opsin genes are located between 4.3Mb and 4.4Mb. Do you see anything interesting there?
 
 <details>
 <summary>Click here to see the resulting R plots</summary>
@@ -570,9 +569,9 @@ To save time, we prepared result files for runs with varying window and step siz
 
  </details>
 
-**Question 13:** What combination of window size/step seems to have the best resolution? Why is the smallest window so noisy?
+**Question 12:** What combination of window size/step seems to have the best resolution? Why is the smallest window so noisy?
 
-**Question 14:** What happens if you plot individual data points, instead of a continuous line? Are the results clearer?
+**Question 13:** What happens if you plot individual data points, instead of a continuous line? Are the results clearer?
 
  <details>
 <summary>Click here to see the zoom in with `-w 10,1` and individual data points</summary>
