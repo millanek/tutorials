@@ -316,7 +316,7 @@ D_BBAA_noGF[which(D_BBAA_noGF$Dstatistic > 0.7),]
 854 S18 S19 S06   1.000000 3.01176e-314        NaN 7.35210e-06 179777  1.5    0
 920 S18 S19 S07   1.000000 3.01176e-314        NaN 7.33584e-06 179771  1.5    0
 ```
-These nine cases arise because there is amost no incomplete lineage sorting among these trios almost all sites are `BBAA` - e.g. 179922 sites for the first trio, while the count for `ABBA` is only 1.5 and for `BABA` it is 0 . The D statistic is calculated as D = (ABBA-BABA)/(ABBA+BABA), which for the first trio would be D = (1.5-0)/(1.5+0)=1. So, the lesson here is that the D statistic is very sensitive to random fluctuations when there is a small number of ABBA and BABA sites. One certainly cannot take the D value seriously unless it is supported by a statistical test suggesting that the D is significanly different from 0. In the most extreme cases above, the p-value could not even be calculated, becuase there were so few sites. Those definitely do not represent geneflow. But in one case we see a p value of 0.00353794. Well, that looks significant, if one considers the traditional 0.05 cutoff. So, again, how is this possible in a dataset simulated with no geneflow? You can use the following R command to plot the distribution of p-values.
+These nine cases arise because there is amost no incomplete lineage sorting among these trios almost all sites are `BBAA` - e.g. 179922 sites for the first trio, while the count for `ABBA` is only 1.5 and for `BABA` it is 0 . The D statistic is calculated as D = (ABBA-BABA)/(ABBA+BABA), which for the first trio would be D = (1.5-0)/(1.5+0)=1. So, the lesson here is that the D statistic is very sensitive to random fluctuations when there is a small number of ABBA and BABA sites. One certainly cannot take the D value seriously unless it is supported by a statistical test suggesting that the D is significanly different from 0. In the most extreme cases above, the p-value could not even be calculated, because there were so few sites. Those definitely do not represent geneflow. But in one case we see a p value of 0.00353794. Well, that looks significant, if one considers the traditional 0.05 cutoff. So, again, how is this possible in a dataset simulated with no geneflow? You can use the following R command to plot the distribution of p-values.
 
 ```R
 plot(D_BBAA_noGF$p.value, ylab="p value",xlab="trio number",ylim=c(0,0.05))
@@ -342,12 +342,13 @@ plot(D_BBAA_noGF$f4.ratio, ylab="f4-ratio",xlab="trio number", ylim=c(0,1))
 Finally, we visualise the data with a heatmap in which the species in positions P2 and P3 are sorted on the horizontal and vertical axes, and the color of the corresponding heatmap cell indicates the most significant *D*-statistic found between these two species, across all possible species in P1. To prepare this plot, we need to prepare a file that lists the order in which the P2 and P3 species should be plotted along the heatmap axes. The file should look like  [`plot_order.txt`](data/plot_order.txt). You could prepare this file manually, or below is a programmatic way: 
 
 ```bash
-cut -f 2 species_sets.txt | uniq | head -n 20 > plot_order.txt
+cut -f 2 species_sets.txt | uniq | head -n 20 > precomputed_results/plot_order.txt
 ```
 
 Then make the plots using the scripts [`plot_d.rb`](src/plot_d.rb) and [`plot_f4ratio.rb`](src/plot_f4ratio.rb). 
 
 ```bash
+cd precomputed_results
 plot_d.rb species_sets_no_geneflow_BBAA.txt plot_order.txt 0.7 species_sets_no_geneflow_BBAA_D.svg
 plot_f4ratio.rb species_sets_no_geneflow_BBAA.txt plot_order.txt 0.2 species_sets_no_geneflow_BBAA_f4ratio.svg
 ```
@@ -452,7 +453,7 @@ The second command creates a file called `fbranch.png`, which is shown below.
 <a name="Tanganyika"></a>
 ## 3. Finding geneflow in a real dataset - Tanganyikan cichlids
 
-In this execise, we are going to see if we can reproduce the findings reported by [Gante et al. (2016)](https://doi.org/10.1111/mec.13767), with a different dataset. The Gante et al. dataset contained whole genome sequence data from five species from the cichlid genus Neolamprologus. The authors analysed these data and reported conclusions that are summarised by the figure below:
+In this exercise, we are going to see if we can reproduce the findings reported by [Gante et al. (2016)](https://doi.org/10.1111/mec.13767), with a different dataset. The Gante et al. dataset contained whole genome sequence data from five species from the cichlid genus Neolamprologus. The authors analysed these data and reported conclusions that are summarised by the figure below:
 
 <p align="center"><img src="img/gante.png"></p>
 
@@ -470,7 +471,7 @@ Dsuite Dtrios -c -t SNAPP_tree.txt NC_031969.vcf.gz NC_031969_sets.txt
 This should finish in a couple of minutes. There are 'only' ten species, so 120 trios. Could this be manageable? Have a look at the output file [NC_031969_sets_tree.txt](data/TanganyikaCichlids/NC_031969_sets__tree.txt) and see if you can interpret the results. Chances are that is is still too complex to interpret the results for the trios just by looking at them. Perhaps you can try the ‘f-branch’ method:
 
 ```bash
-Dsuite Fbranch SNAPP_tree.txt NC_031969_sets__tree.txt > Tanganyika_Fbranch.txt
+Dsuite Fbranch SNAPP_tree.txt NC_031969_sets_tree.txt > Tanganyika_Fbranch.txt
 dtools.py Tanganyika_Fbranch.txt SNAPP_tree.txt
 ```
 
@@ -534,7 +535,7 @@ Finally, we zoom in at the region of the opsin genes (line 12). As you can see, 
 </details>
 
 
-But there is more structure than that in the region. Perhaps we need to reduce the window or step size to see a greater level of detai.
+But there is more structure than that in the region. Perhaps we need to reduce the window or step size to see a greater level of detail.
 
 To save time, we prepared result files for runs with varying window and step sizes: [`mbuna_deep_Diplotaxodon_localFstats__50_5.txt`](data/mbuna_deep_Diplotaxodon_localFstats__50_5.txt),  [`mbuna_deep_Diplotaxodon_localFstats__50_1.txt`](data/mbuna_deep_Diplotaxodon_localFstats__50_1.txt),  [`mbuna_deep_Diplotaxodon_localFstats__10_1.txt`](data/mbuna_deep_Diplotaxodon_localFstats__10_1.txt), and  [`mbuna_deep_Diplotaxodon_localFstats__2_1.txt`](data/mbuna_deep_Diplotaxodon_localFstats__2_1.txt).
 
