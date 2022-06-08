@@ -360,7 +360,18 @@ plot_f4ratio.rb species_sets_no_geneflow_BBAA.txt plot_order.txt 0.2 species_set
 <a name="TestingWithGeneflow"></a>
 #### 2.2 Do we find geneflow in data simulated with geneflow?
 
-How do the results for the simulation with geneflow differ from the above? Here we are going to run a similar set of analyses and make comparisons. We run Dsuite for the dataset with gene-flow as follows:
+We start by loking at the simplest case with an outgroup and three species and one gene-flow event. We subset the 20-species tree to focus only of species S9, S10, and S11. You can see the relevant subset of the tree below:
+
+<p align="center"><img src="img/simulated_gfTree_9_10_11.png" alt="simulated_gfTree" width="600"></p>
+
+ 
+```bash
+Dsuite Dtrios with_geneflow_9_10_11.vcf.gz species_sets_9_10_11.txt
+```
+
+
+
+How do the overall results for the simulation with geneflow differ from the above? Here we are going to run a similar set of analyses and make comparisons. We run Dsuite for the entire dataset with gene-flow as follows:
 
 ```bash
 Dsuite Dtrios -c -n with_geneflow -t simulated_tree_with_geneflow.nwk with_geneflow.vcf.gz species_sets.txt 
