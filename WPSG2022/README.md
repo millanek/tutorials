@@ -294,7 +294,7 @@ diff species_sets_no_geneflow_Dmin.txt species_sets_no_geneflow_tree.txt
 Next, let's look at the results in more detail, for example in [R](https://www.r-project.org). We load the `_BBAA.txt` file and first look at the distribution of D values:  
 
 ```R
-
+setwd("/home/wpsg/workshop_materials/a08_d_statistics/precomputed_results")
 D_BBAA_noGF <- read.table("species_sets_no_geneflow_BBAA.txt",as.is=T,header=T)
 plot(D_BBAA_noGF$Dstatistic, ylab="D",xlab="trio number")
 ```
