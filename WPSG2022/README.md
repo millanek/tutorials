@@ -370,7 +370,7 @@ You can run this analysis using the command below (this should be done within on
 Dsuite Dtrios with_geneflow_9_10_11.vcf.gz species_sets_9_10_11.txt
 ```
 
-Checking the results in the output file `species_sets_9_10_11_BBAA.txt`, we see `D=0.805219` and p-value of  2 \* 10<sup>-16</sup>. Also the f4-ratio statistic is highly elevated at `f4-ratio=0.095`. We can conclude that these values are substantially more convincing than anything we saw in the no-gene-flow case. 
+Checking the results in the output file `species_sets_9_10_11_BBAA.txt`, we see `D=0.805219` and p-value of  2 \* 10<sup>-16</sup>. Also the f4-ratio statistic is highly elevated at `f4-ratio=0.095`. We can conclude that these values are substantially more convincing than anything we saw in the no-gene-flow case. We have detected the gene-flow event. We can also see that the f4-ratio estimate is lower than the true gene-flow fraction (9.5\% vs. 15\%). 
 
 
 However, we often have more than three species to consider. How do the overall, 20 species results for the simulation with geneflow differ from the above non-gene-flow case? Here we are going to run a similar set of analyses and make comparisons. We run Dsuite for the entire dataset with gene-flow as follows:
