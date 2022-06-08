@@ -190,7 +190,7 @@ Finally, it is important to note that the above reconstructed trees are not real
 # Define 'taxpratitions' - i.e. partitions of individuals into taxa (which individuals belong to which species)
 execute taxpartitions_simulated.nex 
 # Assign the correct outgroup:
-Outgroup Outgroup simulatedspecies.OG
+Outgroup simulatedspecies.OG
 # PAUP\* SVD quartets command
 svdq taxpartition=simulatedspecies showScores=no seed=1234568;
 # And save the tree to a file:
