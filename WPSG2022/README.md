@@ -364,11 +364,13 @@ We start by loking at the simplest case with an outgroup and three species and o
 
 <p align="center"><img src="img/simulated_gfTree_9_10_11.png" alt="simulated_gfTree" width="600"></p>
 
+You can run this analysis using the command below (this should be done within one or two minutes):
  
 ```bash
 Dsuite Dtrios with_geneflow_9_10_11.vcf.gz species_sets_9_10_11.txt
 ```
 
+Checking the results in the output file `species_sets_9_10_11_BBAA.txt`, we see `D=0.805219` and p-value of `< 2 * 10<sup>-16</sup>`
 
 
 How do the overall results for the simulation with geneflow differ from the above? Here we are going to run a similar set of analyses and make comparisons. We run Dsuite for the entire dataset with gene-flow as follows:
