@@ -101,6 +101,8 @@ Now we apply the phylogentic (or phylogenomic) approaches that we have learned t
 Our msprime simulation did not use any specific [substitution model](https://en.wikipedia.org/wiki/Models_of_DNA_evolution) for mutations, but simply designated alleles as `0` for ancestral and `1` for derived. The alleles are indicated in the fourth (REF) and fifth (ALT) column of the VCF as per the [VCF file format](https://samtools.github.io/hts-specs/VCFv4.2.pdf). To use PAUP\* we first need to convert the the VCF into the Nexus format, and this needs the  `0` and `1` alleles to be replaced by actual DNA bases. We can use the [vcf2phylip.py](src/vcf2phylip.py) python script and achieve these steps as follows for the dataset simulated without gene-flow:
 
 ```bash
+# Go to the data folder
+cd data
 # unzip the VCF and process it with AWK to replace each ancestral allele (fourth column) with an A and each derived allele (fifth column) with a T
 gunzip -c chr1_no_geneflow.vcf.gz | awk 'BEGIN{OFS=FS="\t"}{ if(NR > 6) { $4="A"; $5="T"; print $0} else {print}};' | gzip -c > chr1_no_geneflow_nt.vcf.gz
 # convert the VCF to the Nexus format:
@@ -138,8 +140,6 @@ As you can see by comparison of the tree you just reconstructed (also below) aga
 Now we repeat the same tree-reconstruction procedure for the simulation with gene-flow, starting with file format conversion: 
 
 ```bash
-# Go to the data folder
-cd data
 # unzip the VCF and process it with AWK to replace each ancestral allele (fourth column) with an A and each derived allele (fifth column) with a T
 gunzip -c with_geneflow.vcf.gz | awk 'BEGIN{OFS=FS="\t"}{ if(NR > 27) { $4="A"; $5="T"; print $0} else {print}};' | gzip -c > with_geneflow_nt.vcf.gz
 # convert the VCF to the Nexus format:
