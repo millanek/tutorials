@@ -207,7 +207,7 @@ Under incomplete lineage sorting alone, two sister species are expected to share
 
 In short, if there is gene-flow between P2 &lt;-&gt; P3, there is going to be an excess of the of the ABBA pattern, leading to positive D statistics. In contrast, gene-flow between P1 &lt;-&gt; P3 would lead to a an excess of the BABA pattern and a negative D statistic. However, whether a species is assigned in the P1 or P2 position is arbitrary, so we can always assign them so that P2 and P3 share more derived alleles and the D statistic is then bounded between 0 and 1. There is also a related and somewhat more complicated measure,  the f4-ratio, which strives to estimate the admixture proportion in percentage. We will not go into the maths here - if you are interested, have a look at the [Dsuite paper](https://doi.org/10.1111/1755-0998.13265). 
 
-To calculate D and related statistics, we are going to use the [Dsuite](https://github.com/millanek/Dsuite) program (described in detail in the paper linked above). The Dsuite software has several advantages: it brings multiple related statistics together into one software package, has a straightforward workflow to calculate the D statistics and the f4-ratio for all combinations of trios in the dataset, and the standard VCF format, thus generally avoiding the need for format conversions or data duplication. It is computationally more efficient than other software in the core tasks, making it more practical for analysing large genome-wide data sets with tens or even hundreds of populations or species. Finally, Dsuite implements the calculation of the <i>f</i><sub>dM</sub> and <i>f</i>-branch statistics for the first time in publicly available software.
+The [Dsuite](https://github.com/millanek/Dsuite) software has several advantages: it brings multiple related statistics together into one software package, has a straightforward workflow to calculate the D statistics and the f4-ratio for all combinations of trios in the dataset, and the standard VCF format, thus generally avoiding the need for format conversions or data duplication. It is computationally more efficient than other software in the core tasks, making it more practical for analysing large genome-wide data sets with tens or even hundreds of populations or species. Finally, Dsuite implements the calculation of the <i>f</i><sub>dM</sub> and <i>f</i>-branch statistics for the first time in publicly available software.
 
 To calculate the D statistics and the f4-ratio for all combinations of trios of species, all we need is the file that specifies what individuals belong to which population/species - we prepared it for you: [species_sets.txt](data/species_sets.txt). Such a file could be prepared manually, but, in this case we can save ourselves the work and automate the process using a combination of `bcftools` and `awk`:   
 
@@ -268,7 +268,7 @@ You should see that the file includes 1140 lines and therefore results for 1140 
 
 </details>
 
-In [`species_sets_no_geneflow_BBAA.txt`](data/species_sets_no_geneflow_BBAA.txt), trios are arranged so that P1 and P2 always share the most derived alleles (BBAA is always the highest number). There are two other output files: one with the `_tree.txt` suffix: [`species_sets_no_geneflow_tree.txt`](data/species_sets_no_geneflow_tree.txt) where trios are arranged according to the tree we gave Dsuite, and a file with the `_Dmin.txt` suffix [`species_sets_no_geneflow_Dmin.txt`](data/species_sets_no_geneflow_Dmin.txt) where trios are arranged so that the D statistic is minimised - providing a kind of "lower bound" on gene-flow statistics. This can be useful in cases where the true relationships between species are not clear, as illustrated for example in [this paper](https://doi.org/10.1038/s41559-018-0717-x) (Fig. 2a). 
+<!--- In [`species_sets_no_geneflow_BBAA.txt`](data/species_sets_no_geneflow_BBAA.txt), trios are arranged so that P1 and P2 always share the most derived alleles (BBAA is always the highest number). There are two other output files: one with the `_tree.txt` suffix: [`species_sets_no_geneflow_tree.txt`](data/species_sets_no_geneflow_tree.txt) where trios are arranged according to the tree we gave Dsuite, and a file with the `_Dmin.txt` suffix [`species_sets_no_geneflow_Dmin.txt`](data/species_sets_no_geneflow_Dmin.txt) where trios are arranged so that the D statistic is minimised - providing a kind of "lower bound" on gene-flow statistics. This can be useful in cases where the true relationships between species are not clear, as illustrated for example in [this paper](https://doi.org/10.1038/s41559-018-0717-x) (Fig. 2a). 
 
 Let's first see how the other outputs differ from the  `_tree.txt` file, which has the correct trio arrangments. :
 
@@ -286,6 +286,7 @@ A comparison of the `_tree.txt` file against the `_Dmin.txt`, which minimises th
 ```bash
 diff species_sets_no_geneflow_Dmin.txt species_sets_no_geneflow_no_geneflow_tree.txt
 ```
+-->
 
 Next, let's look at the results in more detail, for example in [R](https://www.r-project.org). We load the `_BBAA.txt` file and first look at the distribution of D values:  
 
@@ -325,7 +326,7 @@ plot(p.adjust(D_BBAA_noGF$p.value,method="BH"), ylab="p value",xlab="trio number
 ```
 <p align="center"><img src="img/no_geneflow_correctedPvals.png" alt="DstatNoGF-PvalsCorrected\*" width="600"></p>
 
-However, even after applying the BH correction there are three p-values which look significant. These are all false discoveries. Here comes an important scientific lesson - that even if we apply statistical tests correctly, seeing a p-value below 0.05 is not a proof that the null hypothesis is false. All hypothesis testing has [false positives and false negatives](https://en.wikipedia.org/wiki/Type_I_and_type_II_errors). It may be helpful to focus less on statistical testing and aim for a more nuanced understanding of the dataset, as argued for example in this [Nature commentary](https://www.nature.com/articles/d41586-019-00857-9). 
+However, even after applying the BH correction there are three p-values which look significant. These are all false discoveries. Here comes an important scientific lesson: even if we apply statistical tests correctly, seeing a p-value below 0.05 is not a proof that the null hypothesis is false. All hypothesis testing has [false positives and false negatives](https://en.wikipedia.org/wiki/Type_I_and_type_II_errors). It may be helpful to focus less on statistical testing and aim for a more nuanced understanding of the dataset, as argued for example in this [Nature commentary](https://www.nature.com/articles/d41586-019-00857-9). 
 
 Therefore, we should also plot the f4-ratio, which estimates the proportion of genome affected by geneflow. It turns out that this is perhaps the most reliable - all the f4-ratio values are tiny, as they should be for a dataset without geneflow.  
 
@@ -360,8 +361,11 @@ How do the results for the simulation with geneflow differ from the above? Here 
 Dsuite Dtrios -c -n with_geneflow -t simulated_tree_with_geneflow.nwk with_geneflow.vcf.gz species_sets.txt 
 ```
 
-Again, this takes about 50 minutes, so the output files  [`species_sets_with_geneflow_BBAA.txt`](data/species_sets_with_geneflow_BBAA.txt),  [`species_sets_with_geneflow_tree.txt`](data/species_sets_with_geneflow_tree.txt) and [`species_sets_with_geneflow_Dmin.txt`](data/species_sets_with_geneflow_Dmin.txt) are already provided.
+<!--- Again, this takes about 50 minutes, so the output files  [`species_sets_with_geneflow_BBAA.txt`](data/species_sets_with_geneflow_BBAA.txt),  [`species_sets_with_geneflow_tree.txt`](data/species_sets_with_geneflow_tree.txt) and [`species_sets_with_geneflow_Dmin.txt`](data/species_sets_with_geneflow_Dmin.txt) are already provided. -->
 
+Again, this takes about 50 minutes, so the needed output files  [`species_sets_with_geneflow_BBAA.txt`](data/species_sets_with_geneflow_BBAA.txt) and  [`species_sets_with_geneflow_tree.txt`](data/species_sets_with_geneflow_tree.txt) are already provided.
+
+<!--- 
 Now we find 39 differences between the  `_tree.txt` file and the `_BBAA.txt`, reflecting that, under geneflow, sister species often do not share the most derived alleles. Between  `_tree.txt` file and the `_Dmin.txt` there are 124 differences.
 
 ```bash
@@ -383,6 +387,8 @@ draw.triple.venn(length(D_BBAA$P123),length(D_Dmin$P123),length(D_tree$P123),len
 ```
 
 <p align="center"><img src="img/trippleVenn.png" alt="trippleVenn\*" width="600"></p>
+
+-->
 
 Then we explore the results in the `_BBAA.txt` in R, analogously to how we did it above for the no-geneflow case:
 
@@ -420,7 +426,7 @@ plot_f4ratio.rb species_sets_with_geneflow_BBAA.txt plot_order.txt 0.2 species_s
 
 **Question 3:** How informative are the plots above? Can you identify the gene flow events from the plots? 
 
-As an upgrade on the above plots we developed with Hannes Svardal, the f-branch or fb(C) metric (introduced in [Malinsky et al. (2018)](https://doi.org/10.1038/s41559-018-0717-x). This is designed to disentangle correlated f4-ratio results and, unlike the matrix presentation above, f-branch can assign gene flow to specific, possibly internal, branches on a phylogeny. The f-branch metric builds upon and formalises verbal arguments employed by [Martin et al. (2013)](http://www.genome.org/cgi/doi/10.1101/gr.159426.113), who used these lines of reasoning to assign gene flow to specific internal branches on the phylogeny of Heliconius butterflies. 
+As an upgrade on the above plots we developed with Hannes Svardal, the f-branch or fb(C) metric (introduced in [Malinsky et al. (2018)](https://doi.org/10.1038/s41559-018-0717-x). This is designed to disentangle correlated f4-ratio results and, unlike the matrix presentation above, f-branch can assign gene flow to specific, possibly internal, branches on a phylogeny. 
 
 The logic of f-branch is illustated in the following figure. The panel (c) provides an example illustrating interdependences between different f4-ratio scores, which can be informative about the timing of introgression. In this example, different choices for the P1 population provide constraints on when the gene flow could have happened. (d) Based on relationships between the f4-ratio results from different four taxon tests, the f-branch, or f<sub>b</sub> statistic, distinguishes between admixture at different time periods, assigning signals to different (possibly internal) branches in the population/species tree
 
