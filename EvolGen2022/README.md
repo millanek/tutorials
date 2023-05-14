@@ -166,15 +166,6 @@ You should get a tree like the one below:
 
 An examination of this reconstructed tree reveals that in this case we did not recover the topology of the [true tree](img/simulated_tree_with_geneflow.pdf) used as input to the simulation. Unlike in the true tree, in the reconstructed tree species  `S14` is "pulled outside" the group formed by  `S13,S15,S16`. This is most likely because of the gene-flow that `S14` received from `S00`. This is a typical pattern: when one species from within a group receives introgression from another group, it tends to be "pulled out" like this in phylogenetic reconstruction. One argument that could be made here is that the Neighbor Joining algorithm is outdated, and that perhaps newer, more sophisticated, methods would recover the correct tree. You can now try to apply SVDQuartets in PAUP\*, and also try any of the other phylogenomic methods you know to see if any of these will succeed.
 
-<details>
-<summary>Click here to see the reconstructed SVDQuartets tree with gene-flow</summary>
-
-As you can see, the topology is in fact different from the Neighbor Joining, but also is not correct (`S13,S14` should not be sister taxa, also `S10` and `S11` are swapped) . 
-
-<p align="center"><img src="img/with_geneflow_bases.min4_SVDQ.jpg" alt="PAUP\*" width="600"></p>
-
-</details>
-
 ```bash
 # Assign the correct outgroup:
 Outgroup outgroup.0
@@ -184,7 +175,17 @@ svdq taxpartition=none showScores=no seed=1234568;
 savetrees file=SVDq_withGeneFlow.tre
 ```
 
-Finally, it is important to note that the above reconstructed trees are not really species trees, because they have multiple individuals per species. A real species-tree reconstruction approach would integrate data from both individuals for each species. The SVDquartets approach implemented in PAUP\* is capable of this, when we specify which individuals belong to which species. This is done using the file 'taxpartitions_simulated.nex' as shown below.
+<details>
+<summary>Click here to see the reconstructed SVDQuartets tree with gene-flow</summary>
+
+As you can see, the topology is in fact different from the Neighbor Joining, but also is not correct (`S13,S14` should not be sister taxa, also `S10` and `S11` are swapped) . 
+
+<p align="center"><img src="img/with_geneflow_bases.min4_SVDQ.jpg" alt="PAUP\*" width="600"></p>
+
+</details>
+
+
+Finally, we note that the above reconstructed trees are not really species trees, because they contain multiple individuals per species. A real species-tree reconstruction approach would integrate data from both individuals for each species. The SVDquartets approach implemented in PAUP\* is capable of this, when we specify which individuals belong to which species. This is done using the file 'taxpartitions_simulated.nex' as shown below.
 
 ```bash
 # Define 'taxpratitions' - i.e. partitions of individuals into taxa (which individuals belong to which species)
