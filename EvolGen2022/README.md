@@ -257,7 +257,6 @@ Integer counts of ABBA and BABA sites would only be expected if each species wou
 <details>
 <summary>Click here to see the answer</summary>
 
-
 Because each trio is listed on a single row, the number of trios in file [`species_sets_no_geneflow_BBAA.txt`](data/species_sets_no_geneflow_BBAA.txt) is identical to the number of lines in this file. This number can easily be counted using, e.g. the following command:
 
     cat species_sets_no_geneflow_BBAA.txt | wc -l
