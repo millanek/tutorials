@@ -1,4 +1,4 @@
-# Evolutionary Genomics 2022 - Introgression and Species Tree Reconstruction
+# Evolutionary Genomics 2023 - Introgression and Species Tree Reconstruction
 
 A tutorial on analyses of introgression and the effects of introgression on species tree reconstruction 
 
@@ -98,7 +98,7 @@ There are two datasets. First a simulation without gene-flow ([VCF](data/chr1_no
 
 Now we apply the phylogentic (or phylogenomic) approaches that we have learned to the simulated SNP data to see if we can recover the phylogentic trees that were used as input to the simulations. We are going to use algorithms implemented in [PAUP\*](http://phylosolutions.com/paup-test/). 
 
-Our msprime simulation did not use any specific [substitution model](https://en.wikipedia.org/wiki/Models_of_DNA_evolution) for mutations, but simply designated alleles as `0` for ancestral and `1` for derived. The alleles are indicated in the fourth (REF) and fifth (ALT) column of the VCF as per the [VCF file format](https://samtools.github.io/hts-specs/VCFv4.2.pdf). To use PAUP\* we first need to convert the the VCF into the Nexus format, and this needs the  `0` and `1` alleles to be replaced by actual DNA bases. We can use the [vcf2phylip.py](src/vcf2phylip.py) python script and achieve these steps as follows, first for the dataset simulated without gene-flow:
+Our msprime simulation did not use any specific [substitution model](https://en.wikipedia.org/wiki/Models_of_DNA_evolution) for mutations, but simply designated alleles as `0` for ancestral and `1` for derived. The alleles are indicated in the fourth (REF) and fifth (ALT) column of the VCF as per the [VCF file format](https://samtools.github.io/hts-specs/VCFv4.2.pdf). To use PAUP\* we first need to convert the the VCF into the Nexus format, and this needs the  `0` and `1` alleles to be replaced by actual DNA bases. We can use the [vcf2phylip.py](src/vcf2phylip.py) python script and achieve these steps as follows for the dataset simulated without gene-flow:
 
 ```bash
 # unzip the VCF and process it with AWK to replace each ancestral allele (fourth column) with an A and each derived allele (fifth column) with a T
@@ -106,7 +106,7 @@ gunzip -c chr1_no_geneflow.vcf.gz | awk 'BEGIN{OFS=FS="\t"}{ if(NR > 6) { $4="A"
 # convert the VCF to the Nexus format:
 vcf2phylip.py -i chr1_no_geneflow_nt.vcf.gz -p --nexus
 ```
-* Next, we start the command line version of PAUP\* to construct a Neighbour-Joining tree. To start PAUP\*, simply type `paup` on the command line. The follow the commands below.
+Next, we start the command line version of PAUP\* to construct a Neighbour-Joining tree. To start PAUP\*, simply type `paup` on the command line. The follow the commands below.
   
 ```bash
 # Load the data file in the nexus format:
