@@ -138,6 +138,8 @@ As you can see by comparison of the tree you just reconstructed (also below) aga
 Now we repeat the same tree-reconstruction procedure for the simulation with gene-flow, starting with file format conversion: 
 
 ```bash
+# Go to the data folder
+cd data
 # unzip the VCF and process it with AWK to replace each ancestral allele (fourth column) with an A and each derived allele (fifth column) with a T
 gunzip -c with_geneflow.vcf.gz | awk 'BEGIN{OFS=FS="\t"}{ if(NR > 27) { $4="A"; $5="T"; print $0} else {print}};' | gzip -c > with_geneflow_nt.vcf.gz
 # convert the VCF to the Nexus format:
