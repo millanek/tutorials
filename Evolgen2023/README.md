@@ -295,6 +295,8 @@ D_BBAA_noGF <- read.table("species_sets_no_geneflow_BBAA.txt",as.is=T,header=T)
 plot(D_BBAA_noGF$Dstatistic, ylab="D",xlab="trio number")
 ```
 
+You should see a plot like this:
+
 <p align="center"><img src="img/no_geneflow_Dvals.png" alt="DstatNoGF\*" width="600"></p>
 
 There are some very high D statistics. In fact, the D statistics for 9 trios are &gt;0.7, which is extremely high. So how is this possible in a dataset simulated with no geneflow?
