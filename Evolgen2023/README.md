@@ -475,7 +475,7 @@ Dsuite Dtrios -c -t SNAPP_tree.txt NC_031969.vcf.gz NC_031969_sets.txt
 This should finish in a couple of minutes. There are 'only' ten species, so 120 trios. Could this be manageable? Have a look at the output file [TanganyikaCichlids/NC_031969_sets__tree.txt](data/TanganyikaCichlids/NC_031969_sets__tree.txt) and see if you can interpret the results. Chances are that is is still too complex to interpret the results for the trios just by looking at them. Perhaps you can try the ‘f-branch’ method:
 
 ```bash
-Dsuite Fbranch SNAPP_tree.txt NC_031969_sets__tree.txt > Tanganyika_Fbranch.txt
+Dsuite Fbranch SNAPP_tree.txt NC_031969_sets_tree.txt > Tanganyika_Fbranch.txt
 dtools.py Tanganyika_Fbranch.txt SNAPP_tree.txt
 ```
 
