@@ -39,7 +39,7 @@ In this tutorial, we are first going to use simulated data to demonstrate that, 
 
 * **FigTree:** You should already have [FigTree](http://tree.bio.ed.ac.uk/software/figtree/) installed from last week. If not, you can download it for Mac OS X, Linux, and Windows from [https://github.com/rambaut/figtree/releases](https://github.com/rambaut/figtree/releases).
 
-* **(optional) R:** The [R environment for statistical computing](https://www.r-project.org) is widely used by bioinformaticians and many other scientists. It implements many useful statistical distributions, tests, and has very nice capabilities for creating high quality scientific plots/figures. If you don't have it yet, I highly recommend [downloading](https://stat.ethz.ch/CRAN/) the latest version and installing it on your computer. Having said that, R is not strictly needed for this practical, because the plots with results are also available on this website. 
+* **(optional) R:** The [R environment for statistical computing](https://www.r-project.org) is widely used by bioinformaticians and many other scientists. It implements many useful statistical distributions, tests, and has very nice capabilities for creating high quality plots/figures. If you don't have it yet, I highly recommend [downloading](https://stat.ethz.ch/CRAN/) the latest version and installing it on your computer. Having said that, R is not strictly needed for this practical, because the plots with results are also available on this website. 
 
 <a name="simulation"></a>
 
@@ -191,7 +191,7 @@ Finally, we note that the above reconstructed trees are not really species trees
 # Define 'taxpratitions' - i.e. partitions of individuals into taxa (which individuals belong to which species)
 execute taxpartitions_simulated.nex 
 # Assign the correct outgroup:
-Outgroup Outgroup simulatedspecies.OG
+Outgroup simulatedspecies.OG
 # PAUP\* SVD quartets command
 svdq taxpartition=simulatedspecies showScores=no seed=1234568;
 # And save the tree to a file:
