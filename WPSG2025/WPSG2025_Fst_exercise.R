@@ -1,6 +1,6 @@
 # ----------- Probability activity - code for section 4, "estimating Fst" ----------------
 # Author: Milan Malinsky
-# Last edit: 5th June 2022
+# Last edit: 17th January 2025
 
 # ----------- FUNCTIONS ----------------------
 

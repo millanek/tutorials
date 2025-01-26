@@ -1,4 +1,4 @@
-# WPSG 2022 - Analyses of Introgression with SNP Data
+# WPSG 2025 - Analyses of Introgression with SNP Data
 
 A tutorial on analyses of introgression and the effects of introgression on species tree reconstruction 
 
@@ -8,7 +8,7 @@ Milan Malinsky (millanek@gmail.com)
 
 Admixture between populations and introgression between species are common. Therefore a bifurcating tree is often insufficient to capture the full evolutionary history ([example](https://www.sciencedirect.com/science/article/pii/S0959437X16302052)). 
 
-Patterson’s D, also known as ABBA-BABA, and the related estimate of admixture fraction <i>f</i>, referred to as the f4-ratio, are commonly used to assess evidence of gene flow between populations or closely related species in genomic datasets. They are based on examining patterns of allele sharing across populations or closely related species. Although they were developed within a population genetic framework, the methods can be successfully applied for learning about hybridisation and introgression within groups of closely related species, as long as common population genetic assumptions hold – namely that (a) the species share a substantial amount of genetic variation due to common ancestry and incomplete lineage sorting; (b) recurrent and back mutations at the same sites are negligible; and (c) substitution rates are uniform across species.
+Patterson’s D, also known as ABBA-BABA, and the related estimate of admixture fraction <i>f</i>, referred to as the f4-ratio are commonly used to assess evidence of gene flow between populations or closely related species in genomic datasets. They are based on examining patterns of allele sharing across populations or closely related species. Although they were developed in within a population genetic framework the methods can be successfully applied for learning about hybridisation and introgression within groups of closely related species, as long as common population genetic assumptions hold – namely that (a) the species share a substantial amount of genetic variation due to common ancestry and incomplete lineage sorting; (b) recurrent and back mutations at the same sites are negligible; and (c) substitution rates are uniform across species. 
 
 Patterson's D and related statistics have also been used to identify introgressed loci by sliding window scans along the genome, or by calculating these statistics for particular short genomic regions. Because the D statistic itself has a large variance when applied to small genomic windows and because it is a poor estimator of the amount of introgression, additional statistics which are related to the f4-ratio have been designed specifically to investigate signatures of introgression in genomic windows along chromosomes. These statistics include <i>f</i><sub>d</sub> (Martin et al., 2015), its extension <i>f</i><sub>dM</sub> (Malinsky et al., 2015), and the distance fraction <i>d</i><sub>f</sub> (Pfeifer & Kapan, 2019).
 
@@ -33,7 +33,7 @@ In this tutorial, we are first going to use simulated data to demonstrate that, 
 <a name="requirements"></a>
 ## Practical information
 
-* **Terminal and AWS connection:** For most of the exercise, you will only need an ssh connection into your AWS instance. The data are located in `~/workshop_materials/a08_d_statistics`. It may also be useful to use the R studio connection at: `http://ec2-XX-XXX-XXX-XXX.compute-1.amazonaws.com:8787` 
+* **Terminal and AWS connection:** For most of the exercise, you will only need an ssh connection into your AWS instance. The data are located in `~/workshop_materials/27_d_statistics`. It may also be useful to use the R studio connection at: `http://ec2-XX-XXX-XXX-XXX.compute-1.amazonaws.com:8787` 
 
 * **FigTree:** FigTree is a software for visualising trees. If you do not have FigTree you can download it for Mac OS X, Linux, and Windows from [https://github.com/rambaut/figtree/releases](https://github.com/rambaut/figtree/releases). It is also available on the instances where you can use it via Guacamole.
 
@@ -49,7 +49,7 @@ For this exercise, we have simulated SNP data for 20 species in the VCF format, 
 There are two datasets. First a simulation without gene-flow ([VCF](data/chr1_no_geneflow.vcf.gz), true tree: [image](img/simulated_tree_no_geneflow.pdf), [newick](data/simulated_tree_no_geneflow.nwk), [json](data/simulated_tree_no_geneflow.nwk.mass_migrations.json)), and second, a simulation where five gene-flow events have been added to a tree ([VCF](data/with_geneflow.vcf.gz), true tree with gene-flow: [image](img/simulated_tree_with_geneflow.pdf), [newick](data/simulated_tree_with_geneflow.nwk), [json](data/simulated_tree_with_geneflow.nwk.mass_migrations.json)).      
 
 
-The theory and practice of simulating population genomic data will be covered in detail next week on Thursday by Georgia Tsambos.
+The theory and practice of simulating population genomic data will be covered in detail on Wednesday by Georgia Tsambos.
 
 <details>
   <summary>If you are interested in detail about how this specific phylogenomic dataset was simulated with msprime, click here</summary>
@@ -120,10 +120,10 @@ set criterion = distance;
 nj brlens = yes treefile=njtree_noGeneFlow.tre;
 ```
 
-The resulting tree is saved to `~/workshop_materials/a08_d_statistics/njtree_noGeneFlow.tre` on the virtual machine. Press `q` followed by the `Enter/return` key to quit PAUP\*. Then, to copy the tree file to your computer (where you can view it in FigTree), you can use scp as follows:
+The resulting tree is saved to `~/workshop_materials/27_d_statistics/njtree_noGeneFlow.tre` on the virtual machine. Press `q` followed by the `Enter/return` key to quit PAUP\*. Then, to copy the tree file to your computer (where you can view it in FigTree), you can use scp as follows:
 
 ```bash
-scp wpsg@ec2-XX-XXX-XXX-XXX.compute-1.amazonaws.com:~/workshop_materials/a08_d_statistics/njtree_noGeneFlow.tre . 
+scp wpsg@ec2-XX-XXX-XXX-XXX.compute-1.amazonaws.com:~/workshop_materials/27_d_statistics/njtree_noGeneFlow.tre . 
 ```
 
 Alternatively, you can visualise the tree by using Figtree on your instance via Guacamole.
@@ -205,11 +205,12 @@ A more comprehensive tutorial on species tree reconstruction is prepared for tom
 
 Under incomplete lineage sorting alone, two sister species are expected to share about the same proportion of derived alleles with a third closely related species. Thus, if species "P1" and "P2" are sisters and "P3" is a closely related species, then the number of derived alleles shared by P1 and P3 but not P2 and the number of derived alleles that is shared by P2 and P3 but not P1 should be approximately similar. In contrast, if hybridization leads to introgression between species P3 and one out the two species P1 and P2, then P3 should share more derived alleles with that species than it does with the other one, leading to asymmetry in the sharing of derived alleles. These expectations are the basis for the so-called "ABBA-BABA test" (first described in the Supporting Material of [Green et al. 2010](http://science.sciencemag.org/content/328/5979/710.full)) that quantifies support for introgression by the *D*-statistic. Below is an illustration of the basic principle. 
 
+
 <p align="center"><img src="img/DstatIllustration2.png" alt="Dstat\*" width="600"></p>
 
 In short, if there is gene-flow between P2 &lt;-&gt; P3, there is going to be an excess of the ABBA pattern, leading to positive D statistics. In contrast, gene-flow between P1 &lt;-&gt; P3 would lead to a an excess of the BABA pattern and a negative D statistic. However, whether a species is assigned in the P1 or P2 position is arbitrary, so we can always assign them so that P2 and P3 share more derived alleles and the D statistic is then bounded between 0 and 1. There is also a related and somewhat more complicated measure,  the f4-ratio, which strives to estimate the admixture proportion in percentage. We will not go into the maths here - if you are interested, have a look at the [Dsuite paper](https://doi.org/10.1111/1755-0998.13265). 
 
-To calculate D and related statistics, we are going to use the [Dsuite](https://github.com/millanek/Dsuite) program (described in detail in the paper linked above). The Dsuite software has several advantages: it brings several related statistics together into one software package, has a straightforward workflow to calculate the D statistics and the f4-ratio for all combinations of trios in the dataset, and the standard VCF as input format, thus generally avoiding the need for format conversions or data duplication. It is computationally more efficient than other software in the core tasks, making it more practical for analysing large genome-wide data sets with tens or even hundreds of populations or species. Finally, Dsuite implements the calculation of the <i>f</i><sub>dM</sub> and <i>f</i>-branch statistics for the first time in publicly available software.
+The [Dsuite](https://github.com/millanek/Dsuite) software has several advantages: it brings multiple related statistics together into one software package, has a straightforward workflow to calculate the D statistics and the f4-ratio for all combinations of trios in the dataset, and the standard VCF format, thus generally avoiding the need for format conversions or data duplication. It is computationally more efficient than other software in the core tasks, making it more practical for analysing large genome-wide data sets with tens or even hundreds of populations or species. Finally, Dsuite implements the calculation of the <i>f</i><sub>dM</sub> and <i>f</i>-branch statistics for the first time in publicly available software.
 
 To calculate the D statistics and the f4-ratio for all combinations of trios of species, all we need is the file that specifies what individuals belong to which population/species - we prepared it for you: [species_sets.txt](data/species_sets.txt). Such a file could be simply prepared manually, but, in this case we can save ourselves the work and automate the process using a combination of `bcftools` and `awk`:   
 
@@ -230,7 +231,7 @@ We run Dsuite for the dataset without gene-flow as follows:
 ```bash
 Dsuite Dtrios -c -n no_geneflow -t simulated_tree_no_geneflow.nwk chr1_no_geneflow.vcf.gz species_sets.txt 
 ```
-The run takes about 50 minutes. Therefore, we already put the output files for you in the `~/workshop_materials/a08_d_statistics/precomputed_results` folder on the instance.  Let's have a look at the first few lines of  [`species_sets_no_geneflow_BBAA.txt`](data/species_sets_no_geneflow_BBAA.txt):
+The run takes about 50 minutes. Therefore, we already put the output files for you in the `~/workshop_materials/27_d_statistics/precomputed_results` folder on the instance.  Let's have a look at the first few lines of  [`species_sets_no_geneflow_BBAA.txt`](data/species_sets_no_geneflow_BBAA.txt):
 
 ```bash
 head species_sets_no_geneflow_BBAA.txt
@@ -272,7 +273,7 @@ You should see that the file includes 1140 lines and therefore results for 1140 
 
 </details>
 
-In [`species_sets_no_geneflow_BBAA.txt`](data/species_sets_no_geneflow_BBAA.txt), trios are arranged so that P1 and P2 always share the most derived alleles (BBAA is always the highest number). There are two other output files: one with the `_tree.txt` suffix: [`species_sets_no_geneflow_tree.txt`](data/species_sets_no_geneflow_tree.txt) where trios are arranged according to the tree we gave Dsuite, and a file with the `_Dmin.txt` suffix [`species_sets_no_geneflow_Dmin.txt`](data/species_sets_no_geneflow_Dmin.txt) where trios are arranged so that the D statistic is minimised - providing a kind of "lower bound" on gene-flow statistics. This can be useful in cases where the true relationships between species are not clear, as illustrated for example in [this paper](https://doi.org/10.1038/s41559-018-0717-x) (Fig. 2a). 
+<!---  In [`species_sets_no_geneflow_BBAA.txt`](data/species_sets_no_geneflow_BBAA.txt), trios are arranged so that P1 and P2 always share the most derived alleles (BBAA is always the highest number). There are two other output files: one with the `_tree.txt` suffix: [`species_sets_no_geneflow_tree.txt`](data/species_sets_no_geneflow_tree.txt) where trios are arranged according to the tree we gave Dsuite, and a file with the `_Dmin.txt` suffix [`species_sets_no_geneflow_Dmin.txt`](data/species_sets_no_geneflow_Dmin.txt) where trios are arranged so that the D statistic is minimised - providing a kind of "lower bound" on gene-flow statistics. This can be useful in cases where the true relationships between species are not clear, as illustrated for example in [this paper](https://doi.org/10.1038/s41559-018-0717-x) (Fig. 2a). 
 
 Let's first see how the other outputs differ from the  `_tree.txt` file, which has the correct trio arrangments. :
 
@@ -290,11 +291,12 @@ A comparison of the `_tree.txt` file against the `_Dmin.txt`, which minimises th
 ```bash
 diff species_sets_no_geneflow_Dmin.txt species_sets_no_geneflow_tree.txt
 ```
+-->
 
 Next, let's look at the results in more detail, for example in [R](https://www.r-project.org). We load the `_BBAA.txt` file and first look at the distribution of D values:  
 
 ```R
-setwd("/home/wpsg/workshop_materials/a08_d_statistics/precomputed_results")
+setwd("/home/wpsg/workshop_materials/27_d_statistics/precomputed_results")
 D_BBAA_noGF <- read.table("species_sets_no_geneflow_BBAA.txt",as.is=T,header=T)
 plot(D_BBAA_noGF$Dstatistic, ylab="D",xlab="trio number")
 ```
@@ -381,6 +383,7 @@ Dsuite Dtrios -c -n with_geneflow -t simulated_tree_with_geneflow.nwk with_genef
 
 Again, this takes about 50 minutes, so the output files  [`species_sets_with_geneflow_BBAA.txt`](data/species_sets_with_geneflow_BBAA.txt),  [`species_sets_with_geneflow_tree.txt`](data/species_sets_with_geneflow_tree.txt) and [`species_sets_with_geneflow_Dmin.txt`](data/species_sets_with_geneflow_Dmin.txt) are already provided.
 
+<!--- 
 Now we find 39 differences between the  `_tree.txt` file and the `_BBAA.txt`, reflecting that, under geneflow, sister species often do not share the most derived alleles. Between  `_tree.txt` file and the `_Dmin.txt` there are 124 differences.
 
 ```bash
@@ -402,6 +405,7 @@ draw.triple.venn(length(D_BBAA$P123),length(D_Dmin$P123),length(D_tree$P123),len
 ```
 
 <p align="center"><img src="img/trippleVenn.png" alt="trippleVenn\*" width="600"></p>
+-->
 
 Then we explore the results in the `_BBAA.txt` in R, analogously to how we did it above for the no-geneflow case:
 
@@ -439,13 +443,13 @@ plot_f4ratio.rb species_sets_with_geneflow_BBAA.txt plot_order.txt 0.2 species_s
 
 **Question 3:** How informative are the plots above? Can you identify the gene flow events from the plots? 
 
-As an upgrade on the above plots we developed with Hannes Svardal, the f-branch or fb(C) metric (introduced in [Malinsky et al. (2018)](https://doi.org/10.1038/s41559-018-0717-x). This is designed to disentangle correlated f4-ratio results and, unlike the matrix presentation above, f-branch can assign gene flow to specific, possibly internal, branches on a phylogeny. The f-branch metric builds upon and formalises verbal arguments employed by [Martin et al. (2013)](http://www.genome.org/cgi/doi/10.1101/gr.159426.113), who used these lines of reasoning to assign gene flow to specific internal branches on the phylogeny of Heliconius butterflies. 
+As an upgrade on the above plots, Hannes Svardal and myself developed the f-branch or fb(C) metric, which was introduced in [Malinsky et al. (2018)](https://doi.org/10.1038/s41559-018-0717-x). This statistic is designed to disentangle correlated f4-ratio results and, unlike the matrix presentation above, f-branch can assign gene flow to specific, possibly internal, branches on a phylogeny. The f-branch metric builds upon and formalises verbal arguments employed by [Martin et al. (2013)](http://www.genome.org/cgi/doi/10.1101/gr.159426.113) to assign gene flow to specific internal branches on the phylogeny of Heliconius butterflies. 
 
 The logic of f-branch is illustated in the following figure. The panel (c) provides an example illustrating interdependences between different f4-ratio scores, which can be informative about the timing of introgression. In this example, different choices for the P1 population provide constraints on when the gene flow could have happened. (d) Based on relationships between the f4-ratio results from different four taxon tests, the f-branch, or f<sub>b</sub> statistic, distinguishes between admixture at different time periods, assigning signals to different (possibly internal) branches in the population/species tree
 
 <p align="center"><img src="img/FbranchIllustation.png" alt="\*" width="600"></p>
 
-This is implemented in the `Dsuite Fbranch` subcommand, and the plotting utility, called `dtools.py` is in the utils subfolder of the Dsuite package.
+The f-branch statistic calculation is implemented in the `Dsuite Fbranch` subcommand. There is also a plotting utility, called `dtools.py` is in the utils subfolder of the Dsuite package.
 
 ```bash
 Dsuite Fbranch simulated_tree_with_geneflow.nwk species_sets_with_geneflow_tree.txt > species_sets_with_geneflow_Fbranch.txt
@@ -515,7 +519,7 @@ Notice the `-n` option to `dtools.py`, to specify the output file name, making s
 
 This exercise is based on analysis from the [Malinsky et al. (2018)](https://doi.org/10.1038/s41559-018-0717-x) manuscript published in Nature Ecol. Evo.. The paper shows that two deep water adapted lineages of cichlids share signatures of selection and very similar haplotypes in two green-sensitive opsin genes (RH2Aβ and RH2B). The genes are located next to each other on scaffold_18. To find out whether these shared signatures are the result of convergent evolution or of adaptive introgression, we used the f_dM statistic. The f_dM is related to Patterson’s D and to the f4-ratio, but is better suited to analyses of sliding genomic windows. The calculation of this statistic is implemented in the program `Dsuite Dinvestigate`.
 
-The data for this exercise are on the instances in the `~/workshop_materials/a08_d_statistics/Dinvestigate_Malawi` folder. It includes the VCF file with variants mapping to the scaffold_18 of the Malawi cichlid reference genome we used at the time - [`scaffold_18.vcf.gz`](data/scaffold_18.vcf.gz). There are also two other files required to run Dinvestigate: the “SETS” file and the “test_trios” file. In this case they are called: [`MalawiSetsFile.txt`](data/MalawiSetsFile.txt) and [`MalawiTestTriosForInvestigate.txt`](data/MalawiTestTriosForInvestigate.txt). The “TestTrios” file specifies that we want to investigate the admixture signal between the Diplotaxodon genus and the deep benthic group, compared with the mbuna group. The “SETS” file specifies which individuals belong to these groups. Finally, the command to execute the analysis is:
+The data for this exercise are on the instances in the `~/workshop_materials/27_d_statistics/Dinvestigate_Malawi` folder. It includes the VCF file with variants mapping to the scaffold_18 of the Malawi cichlid reference genome we used at the time - [`scaffold_18.vcf.gz`](data/scaffold_18.vcf.gz). There are also two other files required to run Dinvestigate: the “SETS” file and the “test_trios” file. In this case they are called: [`MalawiSetsFile.txt`](data/MalawiSetsFile.txt) and [`MalawiTestTriosForInvestigate.txt`](data/MalawiTestTriosForInvestigate.txt). The “TestTrios” file specifies that we want to investigate the admixture signal between the Diplotaxodon genus and the deep benthic group, compared with the mbuna group. The “SETS” file specifies which individuals belong to these groups. Finally, the command to execute the analysis is:
 
 ```bash
 Dsuite Dinvestigate -w 50,25 scaffold_18.vcf.gz MalawiSetsFile.txt MalawiTestTriosForInvestigate.txt
