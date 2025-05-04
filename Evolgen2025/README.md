@@ -1,4 +1,4 @@
-# Evolutionary Genomics 2024 - Introgression and Species Tree Reconstruction
+# Evolutionary Genomics 2025 - Introgression and Species Tree Reconstruction
 
 A tutorial on analyses of introgression and the effects of introgression on species tree reconstruction 
 
